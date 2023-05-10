@@ -33,3 +33,6 @@ Well the project is quit a complex one but we have some time to learn an make it
 	
 	The software devellopent is done using STM32 Cube IDe and the full project is right now availible into the software directory.
 	Later on, only .C and .h files will be availible and a doc will be created to help user to import and use this .C and .H files. 
+![PCB_V1_Front](https://github.com/Gabibou/Avalon-/assets/100377842/f3d56f3c-d216-4641-97ab-885c58d7cbd2)
+![PCB_V1_Back](https://github.com/Gabibou/Avalon-/assets/100377842/ae4605fd-2f81-4c70-bdc7-ab92b161ce24)
+![PCB_V1_Front](https://github.com/Gabibou/Avalon-/assets/100377842/4c123e75-89c8-42f4-b1b9-96b7fef8e4b2)
