@@ -33,11 +33,18 @@
 extern BNO055_t IMU_BNO055_struct;
 extern COMMAND_t COMMAND_struct;
 extern PROPULSION_t HDW_CONTROLLER_struct;
+extern ALTIMETER_t ALTIMETER_struct;
+extern GPS_t GPS_struct;
+extern Battery_t BATTERY_Struct;
 
 extern I2C_HandleTypeDef hi2c2;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
+extern UART_HandleTypeDef huart4;
+extern UART_HandleTypeDef huart5;
+extern gps_receive_rx[BUFFER_SIZE_NMEA];
+extern uint16_t BatteryMonitoringData[CONVERSION_COUNT];
 
 
 /*Structure definition for math.h pid*/
@@ -69,6 +76,10 @@ osThreadId LedTaskHandle;
 osThreadId Roll_PIDHandle;
 osThreadId Pitch_PIDHandle;
 osThreadId Yaw_PIDHandle;
+osThreadId PressureMonitorHandle;
+osThreadId GPSHandle;
+osThreadId MainTaskHandle;
+osThreadId BatteryMonitoriHandle;
 osMutexId I2C_ControllerHandle;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -80,6 +91,10 @@ void StartLedTask(void const * argument);
 void StartRoll_PID(void const * argument);
 void StartPitch_PID(void const * argument);
 void StartYaw_PID(void const * argument);
+void StartPressureMonitor(void const * argument);
+void StartGPS(void const * argument);
+void StartMainTask(void const * argument);
+void StartBatteryMonitoring(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -90,6 +105,16 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
+
+
+
+	/*Configure output for timer*/
+	PropulsionAndControl_Init(&HDW_CONTROLLER_struct, ESC_GPIO_PIN, ESC_GPIO_PORT, SERVO_LEFT_GPIO_PIN, SERVO_LEFT_GPIO_PORT, SERVO_RIGHT_GPIO_PIN, SERVO_RIGHT_GPIO_PORT, ESC_TIMER_CHANNEL_NBR, SERVO_LEFT_TIMER_CHANNEL_NBR, SERVO_RIGHT_TIMER_CHANNEL_NBR, &htim4);
+
+	/*Init for IMU sensors*/
+	BNO055_Init(&hi2c2, &IMU_BNO055_struct);
+
+
   /* USER CODE END Init */
   /* Create the mutex(es) */
   /* definition and creation of I2C_Controller */
@@ -112,20 +137,6 @@ void MX_FREERTOS_Init(void) {
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
-
-
-  /*Configure output for timer*/
-  PropulsionAndControl_Init(&HDW_CONTROLLER_struct, ESC_GPIO_PIN, ESC_GPIO_PORT, SERVO_LEFT_GPIO_PIN, SERVO_LEFT_GPIO_PORT, SERVO_RIGHT_GPIO_PIN, SERVO_RIGHT_GPIO_PORT, ESC_TIMER_CHANNEL_NBR, SERVO_LEFT_TIMER_CHANNEL_NBR, SERVO_RIGHT_TIMER_CHANNEL_NBR, &htim4);
-
-  /*Init for IMU sensors*/
-  BNO055_Init(&hi2c2, &IMU_BNO055_struct);
-
-
-
-
-
-
-
   /* Create the thread(s) */
   /* definition and creation of LedTask */
   osThreadDef(LedTask, StartLedTask, osPriorityNormal, 0, 128);
@@ -142,6 +153,22 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of Yaw_PID */
   osThreadDef(Yaw_PID, StartYaw_PID, osPriorityIdle, 0, 128);
   Yaw_PIDHandle = osThreadCreate(osThread(Yaw_PID), NULL);
+
+  /* definition and creation of PressureMonitor */
+  osThreadDef(PressureMonitor, StartPressureMonitor, osPriorityIdle, 0, 128);
+  PressureMonitorHandle = osThreadCreate(osThread(PressureMonitor), NULL);
+
+  /* definition and creation of GPS */
+  osThreadDef(GPS, StartGPS, osPriorityIdle, 0, 128);
+  GPSHandle = osThreadCreate(osThread(GPS), NULL);
+
+  /* definition and creation of MainTask */
+  osThreadDef(MainTask, StartMainTask, osPriorityIdle, 0, 256);
+  MainTaskHandle = osThreadCreate(osThread(MainTask), NULL);
+
+  /* definition and creation of BatteryMonitori */
+  osThreadDef(BatteryMonitori, StartBatteryMonitoring, osPriorityIdle, 0, 128);
+  BatteryMonitoriHandle = osThreadCreate(osThread(BatteryMonitori), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -162,8 +189,11 @@ void StartLedTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+	htim3.Instance->CCR1 = 1000;
+	vTaskDelay(100);
+	htim3.Instance->CCR1 = 0;
 	HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    vTaskDelay(1000);
+    vTaskDelay(5000);
   }
   /* USER CODE END StartLedTask */
 }
@@ -251,6 +281,103 @@ void StartYaw_PID(void const * argument)
 		vTaskDelay(150);
   }
   /* USER CODE END StartYaw_PID */
+}
+
+/* USER CODE BEGIN Header_StartPressureMonitor */
+/**
+* @brief Function implementing the PressureMonitor thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartPressureMonitor */
+void StartPressureMonitor(void const * argument)
+{
+  /* USER CODE BEGIN StartPressureMonitor */
+	BMP390_Init(&hi2c2);
+
+	/*Barometer calibration*/
+	BMP390_GetP0Pressure(&hi2c2, &ALTIMETER_struct, I2C_ControllerHandle);
+
+  /* Infinite loop */
+  for(;;)
+  {
+	  BMP390_ReadPress(&hi2c2,&ALTIMETER_struct, I2C_ControllerHandle);
+	  BMP390_ReadTemp(&hi2c2, &ALTIMETER_struct, I2C_ControllerHandle);
+	  BMP390_GetRelativeAltitude(&ALTIMETER_struct);
+	  /*Recalibrate sensor if gps data move too much*/
+		vTaskDelay(500);
+  }
+  /* USER CODE END StartPressureMonitor */
+}
+
+/* USER CODE BEGIN Header_StartGPS */
+/**
+* @brief Function implementing the GPS thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartGPS */
+void StartGPS(void const * argument)
+{
+  /* USER CODE BEGIN StartGPS */
+  /* Infinite loop */
+  for(;;)
+  {
+	  /*TO BE DONE*/
+
+	  /*taskENTER_CRITICAL();
+	  HAL_UART_Receive(&huart4, &gps_receive_rx, BUFFER_SIZE_NMEA, 100);
+	  taskEXIT_CRITICAL();
+	  gps_ReadNMEA(gps_receive_rx,&GPS_struct);*/
+	  vTaskDelay(1000);
+  }
+  /* USER CODE END StartGPS */
+}
+
+/* USER CODE BEGIN Header_StartMainTask */
+/**
+* @brief Function implementing the MainTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartMainTask */
+void StartMainTask(void const * argument)
+{
+  /* USER CODE BEGIN StartMainTask */
+  /* Infinite loop */
+  for(;;)
+  {
+
+
+
+
+
+
+    vTaskDelay(1);
+  }
+  /* USER CODE END StartMainTask */
+}
+
+/* USER CODE BEGIN Header_StartBatteryMonitoring */
+/**
+* @brief Function implementing the BatteryMonitori thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartBatteryMonitoring */
+void StartBatteryMonitoring(void const * argument)
+{
+  /* USER CODE BEGIN StartBatteryMonitoring */
+  /* Infinite loop */
+  for(;;)
+  {
+	Battery_ReadBatteryVoltage(&BATTERY_Struct,BatteryMonitoringData);
+	Battery_ReadCurrent5V(&BATTERY_Struct, BatteryMonitoringData);
+	Battery_ReadCurrent3V3(&BATTERY_Struct, BatteryMonitoringData);
+	Battery_RemaningTime(&BATTERY_Struct);
+    vTaskDelay(5000);
+  }
+  /* USER CODE END StartBatteryMonitoring */
 }
 
 /* Private application code --------------------------------------------------*/

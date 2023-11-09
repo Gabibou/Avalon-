@@ -19,8 +19,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "adc.h"
+#include "dma.h"
 #include "i2c.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -37,11 +40,21 @@ BNO055_t IMU_BNO055_struct;
 COMMAND_t COMMAND_struct;
 /*struct use to control hardware (like flaps or motor %)*/
 PROPULSION_t HDW_CONTROLLER_struct;
+/*Struct use for pressure monitoring*/
+ALTIMETER_t ALTIMETER_struct;
+/*Struct use for gps monitoring*/
+GPS_t GPS_struct;
+/*Struct use to store battery data*/
+Battery_t BATTERY_Struct;
 
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+uint8_t gps_receive_rx[BUFFER_SIZE_NMEA];
+uint16_t BatteryMonitoringData[CONVERSION_COUNT];
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -95,10 +108,14 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_I2C2_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
+  MX_UART4_Init();
+  MX_UART5_Init();
+  MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
   /*Timer start flaps and throttle + buzzer*/
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
@@ -106,6 +123,8 @@ int main(void)
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
 
+  /*Start ADC conversion with DMA request*/
+  HAL_ADC_Start_DMA(&hadc2, &BatteryMonitoringData, CONVERSION_COUNT);
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */

@@ -35,6 +35,9 @@ extern "C" {
 #include "pid.h"
 #include "propulsion_and_control.h"
 #include "arm_math.h"
+#include "bmp390.h"
+#include "adc_voltage_current_measurement.h"
+#include "l80-m39.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
