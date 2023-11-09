@@ -1,0 +1,5 @@
+../Core/Src/app_freertos.c:91:6:MX_FREERTOS_Init	136	static
+../Core/Src/app_freertos.c:159:6:StartLedTask	16	static
+../Core/Src/app_freertos.c:178:6:StartRoll_PID	16	static
+../Core/Src/app_freertos.c:209:6:StartPitch_PID	16	static
+../Core/Src/app_freertos.c:236:6:StartYaw_PID	16	static
