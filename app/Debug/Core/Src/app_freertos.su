@@ -1,5 +1,9 @@
-../Core/Src/app_freertos.c:91:6:MX_FREERTOS_Init	136	static
-../Core/Src/app_freertos.c:159:6:StartLedTask	16	static
-../Core/Src/app_freertos.c:178:6:StartRoll_PID	16	static
-../Core/Src/app_freertos.c:209:6:StartPitch_PID	16	static
-../Core/Src/app_freertos.c:236:6:StartYaw_PID	16	static
+../Core/Src/app_freertos.c:107:6:MX_FREERTOS_Init	216	static
+../Core/Src/app_freertos.c:192:6:StartLedTask	16	static
+../Core/Src/app_freertos.c:214:6:StartRoll_PID	16	static
+../Core/Src/app_freertos.c:245:6:StartPitch_PID	16	static
+../Core/Src/app_freertos.c:272:6:StartYaw_PID	16	static
+../Core/Src/app_freertos.c:299:6:StartPressureMonitor	16	static
+../Core/Src/app_freertos.c:326:6:StartGPS	16	static
+../Core/Src/app_freertos.c:350:6:StartMainTask	16	static
+../Core/Src/app_freertos.c:374:6:StartBatteryMonitoring	16	static

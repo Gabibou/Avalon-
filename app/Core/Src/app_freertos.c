@@ -81,6 +81,7 @@ osThreadId GPSHandle;
 osThreadId MainTaskHandle;
 osThreadId BatteryMonitoriHandle;
 osMutexId I2C_ControllerHandle;
+osSemaphoreId GPS_UART_SemaphoreHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -124,6 +125,11 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
+
+  /* Create the semaphores(s) */
+  /* definition and creation of GPS_UART_Semaphore */
+  osSemaphoreDef(GPS_UART_Semaphore);
+  GPS_UART_SemaphoreHandle = osSemaphoreCreate(osSemaphore(GPS_UART_Semaphore), 1);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -323,12 +329,12 @@ void StartGPS(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  /*TO BE DONE*/
-
-	  /*taskENTER_CRITICAL();
-	  HAL_UART_Receive(&huart4, &gps_receive_rx, BUFFER_SIZE_NMEA, 100);
-	  taskEXIT_CRITICAL();
-	  gps_ReadNMEA(gps_receive_rx,&GPS_struct);*/
+	  /*TO BE DONE marche pas trop */
+	  /*When UART IT then block task until IT*/
+	  HAL_UART_Receive_IT(&huart4, &gps_receive_rx, BUFFER_SIZE_NMEA);
+	  xSemaphoreTake(GPS_UART_SemaphoreHandle,1000);
+	  xSemaphoreTake(GPS_UART_SemaphoreHandle,1000);
+	  gps_ReadNMEA(gps_receive_rx,&GPS_struct);
 	  vTaskDelay(1000);
   }
   /* USER CODE END StartGPS */

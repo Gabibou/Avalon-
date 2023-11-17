@@ -1,0 +1,7 @@
+propulsion_and_control.c:17:6:PropulsionAndControl_UpdateESC	1
+propulsion_and_control.c:22:6:PropulsionAndControl_UpdateLeftFlaps	1
+propulsion_and_control.c:27:6:PropulsionAndControl_UpdateRightFlaps	1
+propulsion_and_control.c:33:6:PropulsionAndControl_Init	1
+propulsion_and_control.c:79:6:PropulsionAndControl_EscSetValue	1
+propulsion_and_control.c:95:6:PropulsionAndControl_LeftServoSetValue	1
+propulsion_and_control.c:111:6:PropulsionAndControl_RightServoSetValue	1
