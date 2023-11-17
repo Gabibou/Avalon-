@@ -5,5 +5,5 @@ app_freertos.c:245:6:StartPitch_PID	1
 app_freertos.c:272:6:StartYaw_PID	1
 app_freertos.c:299:6:StartPressureMonitor	1
 app_freertos.c:326:6:StartGPS	1
-app_freertos.c:350:6:StartMainTask	1
-app_freertos.c:374:6:StartBatteryMonitoring	1
+app_freertos.c:349:6:StartMainTask	1
+app_freertos.c:373:6:StartBatteryMonitoring	1

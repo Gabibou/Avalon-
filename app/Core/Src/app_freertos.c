@@ -195,9 +195,9 @@ void StartLedTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	htim3.Instance->CCR1 = 1000;
+	/*htim3.Instance->CCR1 = 1000;
 	vTaskDelay(100);
-	htim3.Instance->CCR1 = 0;
+	htim3.Instance->CCR1 = 0;*/
 	HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     vTaskDelay(5000);
   }
@@ -332,8 +332,7 @@ void StartGPS(void const * argument)
 	  /*TO BE DONE marche pas trop */
 	  /*When UART IT then block task until IT*/
 	  HAL_UART_Receive_IT(&huart4, &gps_receive_rx, BUFFER_SIZE_NMEA);
-	  xSemaphoreTake(GPS_UART_SemaphoreHandle,1000);
-	  xSemaphoreTake(GPS_UART_SemaphoreHandle,1000);
+	  xSemaphoreTake(GPS_UART_SemaphoreHandle,100000);
 	  gps_ReadNMEA(gps_receive_rx,&GPS_struct);
 	  vTaskDelay(1000);
   }
