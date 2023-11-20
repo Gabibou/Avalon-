@@ -41,6 +41,14 @@ Well the project is quit a complex one but we have some time to learn an make it
 ![PCB_V1_Front](https://github.com/Gabibou/Avalon-/assets/100377842/4c123e75-89c8-42f4-b1b9-96b7fef8e4b2)
 
 # Second prototype overview
+![3](https://github.com/Gabibou/Avalon-/assets/100377842/3b982855-6625-4e5e-af99-b0ac4b951086)
+![2](https://github.com/Gabibou/Avalon-/assets/100377842/15719c67-abf8-411c-8773-0dc2c518725d)
+![4](https://github.com/Gabibou/Avalon-/assets/100377842/bdb9e4fc-5298-45ac-9387-bad0bebaa782)
+![5](https://github.com/Gabibou/Avalon-/assets/100377842/781caa51-0c11-4fb7-86e4-799b0d28d572)
+![6](https://github.com/Gabibou/Avalon-/assets/100377842/2cb2b9c9-7d9d-47dc-99a5-98edd1a6b5de)
+
+
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
