@@ -1,3 +1,6 @@
+
+![Logo](https://i.goopics.net/1q71jm.png)
+
 # Avalon
 
 Hi, and welcome to the Avalon github page ! 
@@ -36,3 +39,14 @@ Well the project is quit a complex one but we have some time to learn an make it
 ![PCB_V1_Front](https://github.com/Gabibou/Avalon-/assets/100377842/f3d56f3c-d216-4641-97ab-885c58d7cbd2)
 ![PCB_V1_Back](https://github.com/Gabibou/Avalon-/assets/100377842/ae4605fd-2f81-4c70-bdc7-ab92b161ce24)
 ![PCB_V1_Front](https://github.com/Gabibou/Avalon-/assets/100377842/4c123e75-89c8-42f4-b1b9-96b7fef8e4b2)
+
+# Second prototype overview
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+
+## Acknowledgements
+
+ - [Partnership from SeedStudio](https://www.seeedstudio.com/)
+
