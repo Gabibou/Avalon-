@@ -1,0 +1,6 @@
+### AL ###
+#ignore all compilation files
+*.o
+*.d
+*.map
+*.su

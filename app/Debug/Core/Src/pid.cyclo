@@ -1,0 +1,7 @@
+../Core/Src/pid.c:18:11:Pid_CalculatePitchError	1
+../Core/Src/pid.c:23:11:Pid_CalculateYawError	1
+../Core/Src/pid.c:28:11:Pid_CalculateRollError	1
+../Core/Src/pid.c:33:6:Pid_Init	1
+../Core/Src/pid.c:46:6:Pid_CompensateYaw	1
+../Core/Src/pid.c:59:6:Pid_CompensateRoll	5
+../Core/Src/pid.c:131:6:Pid_CompensatePitch	5
