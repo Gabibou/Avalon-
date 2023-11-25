@@ -54,7 +54,7 @@ Core/Src/adc_voltage_current_measuremet.o: \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
  ../Core/Inc/pid.h \
- C:/Users/gabri/Avalon-/app/Drivers/CMSIS/DSP/Include/arm_math.h \
+ C:/Users/33768/STM32CubeIDE/workspace_1.11.0/AVALON_PROJECT/Avalon-/app/Drivers/CMSIS/DSP/Include/arm_math.h \
  ../Drivers/CMSIS/Include/cmsis_compiler.h \
  ../Core/Inc/propulsion_and_control.h \
  ../Core/Inc/propulsion_and_control.h ../Core/Inc/bmp390.h \
@@ -114,7 +114,7 @@ Core/Src/adc_voltage_current_measuremet.o: \
 ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
 ../Core/Inc/pid.h:
-C:/Users/gabri/Avalon-/app/Drivers/CMSIS/DSP/Include/arm_math.h:
+C:/Users/33768/STM32CubeIDE/workspace_1.11.0/AVALON_PROJECT/Avalon-/app/Drivers/CMSIS/DSP/Include/arm_math.h:
 ../Drivers/CMSIS/Include/cmsis_compiler.h:
 ../Core/Inc/propulsion_and_control.h:
 ../Core/Inc/propulsion_and_control.h:

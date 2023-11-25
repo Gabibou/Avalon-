@@ -61,7 +61,7 @@ extern UART_HandleTypeDef huart5;
 extern TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN EV */
-
+extern uint32_t UwTickByTimer7;
 /* USER CODE END EV */
 
 /******************************************************************************/

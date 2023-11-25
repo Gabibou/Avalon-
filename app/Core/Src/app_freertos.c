@@ -108,9 +108,9 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
 
-
 	/*Configure output for timer*/
 	PropulsionAndControl_Init(&HDW_CONTROLLER_struct, ESC_GPIO_PIN, ESC_GPIO_PORT, SERVO_LEFT_GPIO_PIN, SERVO_LEFT_GPIO_PORT, SERVO_RIGHT_GPIO_PIN, SERVO_RIGHT_GPIO_PORT, ESC_TIMER_CHANNEL_NBR, SERVO_LEFT_TIMER_CHANNEL_NBR, SERVO_RIGHT_TIMER_CHANNEL_NBR, &htim4);
+
 
 	/*Init for IMU sensors*/
 	BNO055_Init(&hi2c2, &IMU_BNO055_struct);
@@ -153,27 +153,27 @@ void MX_FREERTOS_Init(void) {
   Roll_PIDHandle = osThreadCreate(osThread(Roll_PID), NULL);
 
   /* definition and creation of Pitch_PID */
-  osThreadDef(Pitch_PID, StartPitch_PID, osPriorityIdle, 0, 128);
+  osThreadDef(Pitch_PID, StartPitch_PID, osPriorityLow, 0, 128);
   Pitch_PIDHandle = osThreadCreate(osThread(Pitch_PID), NULL);
 
   /* definition and creation of Yaw_PID */
-  osThreadDef(Yaw_PID, StartYaw_PID, osPriorityIdle, 0, 128);
+  osThreadDef(Yaw_PID, StartYaw_PID, osPriorityLow, 0, 128);
   Yaw_PIDHandle = osThreadCreate(osThread(Yaw_PID), NULL);
 
   /* definition and creation of PressureMonitor */
-  osThreadDef(PressureMonitor, StartPressureMonitor, osPriorityIdle, 0, 128);
+  osThreadDef(PressureMonitor, StartPressureMonitor, osPriorityLow, 0, 128);
   PressureMonitorHandle = osThreadCreate(osThread(PressureMonitor), NULL);
 
   /* definition and creation of GPS */
-  osThreadDef(GPS, StartGPS, osPriorityIdle, 0, 128);
+  osThreadDef(GPS, StartGPS, osPriorityLow, 0, 128);
   GPSHandle = osThreadCreate(osThread(GPS), NULL);
 
   /* definition and creation of MainTask */
-  osThreadDef(MainTask, StartMainTask, osPriorityIdle, 0, 256);
+  osThreadDef(MainTask, StartMainTask, osPriorityLow, 0, 256);
   MainTaskHandle = osThreadCreate(osThread(MainTask), NULL);
 
   /* definition and creation of BatteryMonitori */
-  osThreadDef(BatteryMonitori, StartBatteryMonitoring, osPriorityIdle, 0, 128);
+  osThreadDef(BatteryMonitori, StartBatteryMonitoring, osPriorityLow, 0, 128);
   BatteryMonitoriHandle = osThreadCreate(osThread(BatteryMonitori), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -199,7 +199,7 @@ void StartLedTask(void const * argument)
 	vTaskDelay(100);
 	htim3.Instance->CCR1 = 0;*/
 	HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-    vTaskDelay(5000);
+    vTaskDelay(1000);
   }
   /* USER CODE END StartLedTask */
 }
