@@ -13,7 +13,7 @@
 
 //Set all maximum propulsion and extension value until which the aicraft will crash
 //this values will be use to calculate next trajectory or travel time
-#define MAX_PROPULSION_LEVEL 6000
+#define MAX_PROPULSION_LEVEL 7200
 #define MIN_PROPULSION_LEVEL 3000
 
 #define MAX_LEFT_EXTENSION 3500

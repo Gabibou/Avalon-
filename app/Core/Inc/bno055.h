@@ -154,6 +154,18 @@ typedef enum {  // BNO-55 operation modes
   BNO055_OPERATION_MODE_NDOF  // 0x0C
 } bno055_opmode_t;
 
+typedef enum {	//Accelerometer range
+	BNO055_ACCEL_RANGE_2G = 0x00,
+	BNO055_ACCEL_RANGE_4G = 0x01,
+	BNO055_ACCEL_RANGE_8G = 0x02,
+	BNO055_ACCEL_RANGE_16G = 0x03,
+}bno055_accel_range_t;
+
+typedef enum {	//Accelerometer unit
+	BNO055_ACCEL_UNIT_MS = 0x00,
+	BNO055_ACCEL_UNIT_G = 0x01,
+}bno055_accel_unit_t;
+
 typedef struct{
 	//magnetometer raw value
 	float magnetometer_x;
@@ -213,6 +225,8 @@ typedef struct{
 	//Check status --> Should stay at 0 else this mean error happend many time during self test
 	uint8_t self_test_error;
 
+	I2C_HandleTypeDef *I2C_pt;
+
 }BNO055_t;
 
 
@@ -234,9 +248,12 @@ void BNO055_ReadMagneter(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CCo
 void BNO055_ReadQua(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CControllerProtect);
 void BNO055_ReadLina(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CControllerProtect);
 void BNO055_ReadGrav(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CControllerProtect);
-void BNO055_ResetIntFlag(I2C_HandleTypeDef *I2C);
-uint8_t BNO055_ReadInterruptStatus(I2C_HandleTypeDef *I2C);
-
+uint8_t BNO055_ReadITStatus(I2C_HandleTypeDef * I2C);
+void BNO055_EnableAccHighG(I2C_HandleTypeDef *I2C);
+void BNO055_EnableHighGAcc(I2C_HandleTypeDef *I2C,char axis);
+void BNO055_ClearIntFlag(I2C_HandleTypeDef *I2C);
+void BNO055_SetAccelerometerRange(I2C_HandleTypeDef *I2C,bno055_accel_range_t range);
+void BNO055_SetAccelerometerUnit(I2C_HandleTypeDef *I2C,bno055_accel_unit_t unit);
 
 void BNO055_ReadEuler_Yaw(I2C_HandleTypeDef *I2C,BNO055_t *BNO055);
 void BNO055_ReadEuler_Pitch(I2C_HandleTypeDef *I2C,BNO055_t *BNO055);

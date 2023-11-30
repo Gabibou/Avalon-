@@ -38,7 +38,6 @@ extern "C" {
 #include "bmp390.h"
 #include "adc_voltage_current_measurement.h"
 #include "l80-m39.h"
-#include "semphr.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
