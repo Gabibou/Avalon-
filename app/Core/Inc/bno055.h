@@ -131,8 +131,8 @@
 
 /*As the hal take addr bit number 7 to 1 and the addr is on bit 6 to 0 we have to do a 0x28<<1*/
 #define BNO055_I2C_ADDR 0x50	//Can also be 0x29 if the COM3 pin is connected to VCC
-
-
+#define BNO055_HG_THRESHOLD 0x40 //Aprox 1.5G 0x5F
+#define BNO055_HG_DURATION 0x40 //Aprox 200ms 0x63
 
 
 //---------------------------------------------------------------- TYPE DEF ----------------------------------------------------------------
@@ -254,7 +254,8 @@ void BNO055_EnableHighGAcc(I2C_HandleTypeDef *I2C,char axis);
 void BNO055_ClearIntFlag(I2C_HandleTypeDef *I2C);
 void BNO055_SetAccelerometerRange(I2C_HandleTypeDef *I2C,bno055_accel_range_t range);
 void BNO055_SetAccelerometerUnit(I2C_HandleTypeDef *I2C,bno055_accel_unit_t unit);
-
+void BNO055_SetHighGThreshold(I2C_HandleTypeDef *I2C,uint8_t threshold);
+void BNO055_SetHighGDuration(I2C_HandleTypeDef *I2C,uint8_t duration);
 void BNO055_ReadEuler_Yaw(I2C_HandleTypeDef *I2C,BNO055_t *BNO055);
 void BNO055_ReadEuler_Pitch(I2C_HandleTypeDef *I2C,BNO055_t *BNO055);
 void BNO055_ReadEuler_Roll(I2C_HandleTypeDef *I2C,BNO055_t *BNO055);

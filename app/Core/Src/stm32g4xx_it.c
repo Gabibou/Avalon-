@@ -59,6 +59,7 @@ extern DMA_HandleTypeDef hdma_adc2;
 extern UART_HandleTypeDef huart4;
 extern UART_HandleTypeDef huart5;
 extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef hi2c2;
 
 /* USER CODE BEGIN EV */
 
@@ -200,7 +201,8 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
-
+  BNO055_ClearIntFlag(&hi2c2);
+  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
   /* USER CODE END EXTI15_10_IRQn 1 */
 }
 

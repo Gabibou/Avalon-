@@ -81,6 +81,9 @@ void BNO055_EnableAccHighG(I2C_HandleTypeDef *I2C){
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_INT_EN, 1, &system_reg, 1, 100);
 	system_reg|=1<<5;
 	HAL_I2C_Mem_Write(I2C, BNO055_I2C_ADDR, BNO055_INT_EN, 1, &system_reg, 1, 10);
+	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_INT_MSK, 1, &system_reg, 1, 100);
+	system_reg|=1<<5;
+	HAL_I2C_Mem_Write(I2C, BNO055_I2C_ADDR, BNO055_INT_MSK, 1, &system_reg, 1, 10);
 }
 
 /*
@@ -184,7 +187,7 @@ uint8_t BNO055_CheckSelfTestResult(I2C_HandleTypeDef *I2C,BNO055_t *BNO055){
  * Method use to set the accelerometer range
  * param: I2C --> pointer on I2C handle struct
  * param: range --> type range already defined in <bno055.h>
- * note: need to be call after page(1)
+ * note: need to be call after page(1) + can only be set in sensors mode
  */
 void BNO055_SetAccelerometerRange(I2C_HandleTypeDef *I2C,bno055_accel_range_t range){
 	uint8_t system_reg;
@@ -205,6 +208,29 @@ void BNO055_SetAccelerometerUnit(I2C_HandleTypeDef *I2C,bno055_accel_unit_t unit
 	HAL_I2C_Mem_Write(I2C, BNO055_I2C_ADDR, BNO055_UNIT_SEL, 1, &system_reg, 1, 10);
 }
 
+/*
+ * Method use to set the high g interrupt threshold
+ * param: I2C --> pointer on I2C handle struct
+ * param: threshold --> threshold in LSB (15.81mg = 1LSB)
+ *  * note: need to be call after page(1)
+ */
+void BNO055_SetHighGThreshold(I2C_HandleTypeDef *I2C,uint8_t threshold){
+	uint8_t system_reg;
+	system_reg = threshold;
+	HAL_I2C_Mem_Write(I2C, BNO055_I2C_ADDR, BNO055_ACC_HG_THRESH, 1, &system_reg, 1, 10);
+}
+
+/*
+ * Method use to set the high g interrupt duration
+ * param: I2C --> pointer on I2C handle struct
+ * param: duration --> duration in ms (1LSB = 2ms)
+ *  * note: need to be call after page(1)
+ */
+void BNO055_SetHighGDuration(I2C_HandleTypeDef *I2C,uint8_t duration){
+	uint8_t system_reg;
+	system_reg = duration;
+	HAL_I2C_Mem_Write(I2C, BNO055_I2C_ADDR, BNO055_ACC_HG_DURATION, 1, &system_reg, 1, 10);
+}
 
 /*
  * Init function for IMU, it enable it run self test
@@ -225,9 +251,6 @@ uint8_t BNO055_Init(I2C_HandleTypeDef *I2C,BNO055_t *BNO055){
 	//We need to select the page 1
 	BNO055_SetPage(I2C,1);
 
-	//Set range at 4G
-	BNO055_SetAccelerometerRange(I2C, BNO055_ACCEL_RANGE_4G);
-
 	//Enable High G accelerometer interrupt
 	BNO055_EnableAccHighG(I2C);
 
@@ -236,11 +259,14 @@ uint8_t BNO055_Init(I2C_HandleTypeDef *I2C,BNO055_t *BNO055){
 	BNO055_EnableHighGAcc(I2C, 'Y');
 	BNO055_EnableHighGAcc(I2C, 'Z');
 
+	//Set threshold
+	BNO055_SetHighGThreshold(I2C, BNO055_HG_THRESHOLD);
+
+	//Set the duration
+	BNO055_SetHighGDuration(I2C, BNO055_HG_DURATION);
+
 	//We need to select the page 0
 	BNO055_SetPage(I2C,0);
-
-	//Set unit for accelerometer in G
-	BNO055_SetAccelerometerUnit(I2C, BNO055_ACCEL_UNIT_G);
 
 	//As the board have external 32.756 khz clock we use it
 	BNO055_EnableExtClock(I2C);

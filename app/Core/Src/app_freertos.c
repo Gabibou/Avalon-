@@ -349,12 +349,13 @@ void StartGPS(void const * argument)
 void StartMainTask(void const * argument)
 {
   /* USER CODE BEGIN StartMainTask */
+	uint8_t test;
   /* Infinite loop */
   for(;;)
   {
 
 	  /*Test purpose only*/
-	  BNO055_ReadLina(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
+	  test = BNO055_ReadITStatus(&hi2c2);
 
     vTaskDelay(1);
   }
