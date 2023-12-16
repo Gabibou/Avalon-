@@ -65,6 +65,9 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_Pin GPIO_PIN_9
 #define LED_GPIO_Port GPIOA
+#define IMU_IT_Pin GPIO_PIN_10
+#define IMU_IT_GPIO_Port GPIOA
+#define IMU_IT_EXTI_IRQn EXTI15_10_IRQn
 
 /* USER CODE BEGIN Private defines */
 

@@ -131,7 +131,7 @@
 
 /*As the hal take addr bit number 7 to 1 and the addr is on bit 6 to 0 we have to do a 0x28<<1*/
 #define BNO055_I2C_ADDR 0x50	//Can also be 0x29 if the COM3 pin is connected to VCC
-#define BNO055_HG_THRESHOLD 0x40 //Aprox 1.5G 0x5F
+#define BNO055_HG_THRESHOLD 0x50 //Aprox 1.5G 0x5F
 #define BNO055_HG_DURATION 0x40 //Aprox 200ms 0x63
 
 

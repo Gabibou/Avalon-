@@ -119,6 +119,7 @@ void BNO055_ClearIntFlag(I2C_HandleTypeDef *I2C){
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_SYS_TRIGGER, 1, &system_reg, 1, 100);
 	system_reg|=1<<6;
 	HAL_I2C_Mem_Write(I2C, BNO055_I2C_ADDR, BNO055_SYS_TRIGGER, 1, &system_reg, 1, 10);
+	BNO055_ReadITStatus(I2C);
 }
 
 

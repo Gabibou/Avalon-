@@ -82,6 +82,7 @@ osThreadId MainTaskHandle;
 osThreadId BatteryMonitoriHandle;
 osMutexId I2C_ControllerHandle;
 osSemaphoreId GPS_UART_SemaphoreHandle;
+osSemaphoreId HG_PROTECTION_SEMHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -107,8 +108,6 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
-
-
 	/*Configure output for timer*/
 	PropulsionAndControl_Init(&HDW_CONTROLLER_struct, ESC_GPIO_PIN, ESC_GPIO_PORT, SERVO_LEFT_GPIO_PIN, SERVO_LEFT_GPIO_PORT, SERVO_RIGHT_GPIO_PIN, SERVO_RIGHT_GPIO_PORT, ESC_TIMER_CHANNEL_NBR, SERVO_LEFT_TIMER_CHANNEL_NBR, SERVO_RIGHT_TIMER_CHANNEL_NBR, &htim4);
 
@@ -130,6 +129,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of GPS_UART_Semaphore */
   osSemaphoreDef(GPS_UART_Semaphore);
   GPS_UART_SemaphoreHandle = osSemaphoreCreate(osSemaphore(GPS_UART_Semaphore), 1);
+
+  /* definition and creation of HG_PROTECTION_SEM */
+  osSemaphoreDef(HG_PROTECTION_SEM);
+  HG_PROTECTION_SEMHandle = osSemaphoreCreate(osSemaphore(HG_PROTECTION_SEM), 1);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -153,27 +156,27 @@ void MX_FREERTOS_Init(void) {
   Roll_PIDHandle = osThreadCreate(osThread(Roll_PID), NULL);
 
   /* definition and creation of Pitch_PID */
-  osThreadDef(Pitch_PID, StartPitch_PID, osPriorityIdle, 0, 128);
+  osThreadDef(Pitch_PID, StartPitch_PID, osPriorityLow, 0, 128);
   Pitch_PIDHandle = osThreadCreate(osThread(Pitch_PID), NULL);
 
   /* definition and creation of Yaw_PID */
-  osThreadDef(Yaw_PID, StartYaw_PID, osPriorityIdle, 0, 128);
+  osThreadDef(Yaw_PID, StartYaw_PID, osPriorityLow, 0, 128);
   Yaw_PIDHandle = osThreadCreate(osThread(Yaw_PID), NULL);
 
   /* definition and creation of PressureMonitor */
-  osThreadDef(PressureMonitor, StartPressureMonitor, osPriorityIdle, 0, 128);
+  osThreadDef(PressureMonitor, StartPressureMonitor, osPriorityLow, 0, 128);
   PressureMonitorHandle = osThreadCreate(osThread(PressureMonitor), NULL);
 
   /* definition and creation of GPS */
-  osThreadDef(GPS, StartGPS, osPriorityIdle, 0, 128);
+  osThreadDef(GPS, StartGPS, osPriorityLow, 0, 128);
   GPSHandle = osThreadCreate(osThread(GPS), NULL);
 
   /* definition and creation of MainTask */
-  osThreadDef(MainTask, StartMainTask, osPriorityIdle, 0, 256);
+  osThreadDef(MainTask, StartMainTask, osPriorityLow, 0, 256);
   MainTaskHandle = osThreadCreate(osThread(MainTask), NULL);
 
   /* definition and creation of BatteryMonitori */
-  osThreadDef(BatteryMonitori, StartBatteryMonitoring, osPriorityIdle, 0, 128);
+  osThreadDef(BatteryMonitori, StartBatteryMonitoring, osPriorityLow, 0, 128);
   BatteryMonitoriHandle = osThreadCreate(osThread(BatteryMonitori), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -348,16 +351,19 @@ void StartGPS(void const * argument)
 /* USER CODE END Header_StartMainTask */
 void StartMainTask(void const * argument)
 {
-  /* USER CODE BEGIN StartMainTask */
-	uint8_t test;
+	/* USER CODE BEGIN StartMainTask */
+	xSemaphoreTake(HG_PROTECTION_SEMHandle,9999999999999999);
+	xSemaphoreTake(HG_PROTECTION_SEMHandle,9999999999999999);
+	for(int i=0;i<5;i++){
+		htim3.Instance->CCR1 = 1000;
+		vTaskDelay(100);
+		htim3.Instance->CCR1 = 0;
+		vTaskDelay(100);
+	}
   /* Infinite loop */
   for(;;)
   {
-
-	  /*Test purpose only*/
-	  test = BNO055_ReadITStatus(&hi2c2);
-
-    vTaskDelay(1);
+	  vTaskDelay(1000);
   }
   /* USER CODE END StartMainTask */
 }

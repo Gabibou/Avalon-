@@ -32,6 +32,7 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 extern osSemaphoreId GPS_UART_SemaphoreHandle;
+extern osSemaphoreId HG_PROTECTION_SEMHandle;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -59,10 +60,9 @@ extern DMA_HandleTypeDef hdma_adc2;
 extern UART_HandleTypeDef huart4;
 extern UART_HandleTypeDef huart5;
 extern TIM_HandleTypeDef htim1;
-extern TIM_HandleTypeDef hi2c2;
 
 /* USER CODE BEGIN EV */
-
+extern I2C_HandleTypeDef hi2c2;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -199,10 +199,10 @@ void EXTI15_10_IRQHandler(void)
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
 
   /* USER CODE END EXTI15_10_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
+  HAL_GPIO_EXTI_IRQHandler(IMU_IT_Pin);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
   BNO055_ClearIntFlag(&hi2c2);
-  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+  xSemaphoreGiveFromISR(HG_PROTECTION_SEMHandle,1);
   /* USER CODE END EXTI15_10_IRQn 1 */
 }
 

@@ -7,5 +7,5 @@
 ../Core/Src/stm32g4xx_it.c:169:6:DMA1_Channel1_IRQHandler	1
 ../Core/Src/stm32g4xx_it.c:183:6:TIM1_UP_TIM16_IRQHandler	1
 ../Core/Src/stm32g4xx_it.c:197:6:EXTI15_10_IRQHandler	1
-../Core/Src/stm32g4xx_it.c:211:6:UART4_IRQHandler	1
-../Core/Src/stm32g4xx_it.c:226:6:UART5_IRQHandler	1
+../Core/Src/stm32g4xx_it.c:212:6:UART4_IRQHandler	1
+../Core/Src/stm32g4xx_it.c:227:6:UART5_IRQHandler	1
