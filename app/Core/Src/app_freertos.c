@@ -363,6 +363,9 @@ void StartMainTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+	  BNO055_ReadLina(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
+	  BNO055_ReadAccel(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
+
 	  vTaskDelay(1000);
   }
   /* USER CODE END StartMainTask */

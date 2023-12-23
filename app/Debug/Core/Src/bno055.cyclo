@@ -18,10 +18,10 @@
 ../Core/Src/bno055.c:299:6:BNO055_ReadGrav	1
 ../Core/Src/bno055.c:331:6:BNO055_ReadTemp	1
 ../Core/Src/bno055.c:348:6:BNO055_ReadGyro	1
-../Core/Src/bno055.c:380:6:BNO055_ReadAccel	1
-../Core/Src/bno055.c:411:6:BNO055_ReadMagneter	1
-../Core/Src/bno055.c:442:6:BNO055_ReadQua	1
-../Core/Src/bno055.c:479:6:BNO055_ReadLina	1
-../Core/Src/bno055.c:513:6:BNO055_ReadEuler_Roll	2
-../Core/Src/bno055.c:532:6:BNO055_ReadEuler_Pitch	2
-../Core/Src/bno055.c:551:6:BNO055_ReadEuler_Yaw	1
+../Core/Src/bno055.c:380:6:BNO055_ReadAccel	4
+../Core/Src/bno055.c:425:6:BNO055_ReadMagneter	1
+../Core/Src/bno055.c:456:6:BNO055_ReadQua	1
+../Core/Src/bno055.c:493:6:BNO055_ReadLina	4
+../Core/Src/bno055.c:537:6:BNO055_ReadEuler_Roll	2
+../Core/Src/bno055.c:556:6:BNO055_ReadEuler_Pitch	2
+../Core/Src/bno055.c:575:6:BNO055_ReadEuler_Yaw	1

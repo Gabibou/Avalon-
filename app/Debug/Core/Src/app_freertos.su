@@ -6,4 +6,4 @@
 ../Core/Src/app_freertos.c:302:6:StartPressureMonitor	16	static
 ../Core/Src/app_freertos.c:329:6:StartGPS	16	static
 ../Core/Src/app_freertos.c:352:6:StartMainTask	24	static
-../Core/Src/app_freertos.c:378:6:StartBatteryMonitoring	16	static
+../Core/Src/app_freertos.c:381:6:StartBatteryMonitoring	16	static

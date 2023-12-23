@@ -167,20 +167,28 @@ typedef enum {	//Accelerometer unit
 }bno055_accel_unit_t;
 
 typedef struct{
+	float x;
+	float y;
+	float z;
+}Axis_t;
+
+typedef struct{
+	float w;
+	float x;
+	float y;
+	float z;
+}Quaternion_axis_t;
+
+
+typedef struct{
 	//magnetometer raw value
-	float magnetometer_x;
-	float magnetometer_y;
-	float magnetometer_z;
+	Axis_t magnetometer;
 
 	//accelerometer raw value
-	float accelerometer_x;
-	float accelerometer_y;
-	float accelerometer_z;
+	Axis_t accelerometer;
 
 	//gyroscope raw value
-	float gyro_x;
-	float gyro_y;
-	float gyro_z;
+	Axis_t gyroscope;
 
 	uint8_t temp;
 
@@ -189,25 +197,15 @@ typedef struct{
 typedef struct{
 
 	//Come from euler algorythm
-	float euler_roll;
-	float euler_pitch;
-	float euler_heading;
+	Axis_t euler_angles;
 
 	//Come from the quaternion algorythm
-	float quaternion_w;
-	float quaternion_x;
-	float quaternion_y;
-	float quaternion_z;
-
+	Quaternion_axis_t quaternions;
 	//Calculated by the sensor (idk the algorythm this time)
-	float linear_accel_x;
-	float linear_accel_y;
-	float linear_accel_z;
+	Axis_t linear_acceleration;
 
 	//Calculated by the sensor (probably use some basic formula like p=mg)
-	float gravity_x;
-	float gravity_y;
-	float gravity_z;
+	Axis_t gravity_vector;
 
 }BNO055_calculated_t;
 

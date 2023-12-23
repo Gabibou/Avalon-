@@ -305,21 +305,21 @@ void BNO055_ReadGrav(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CContro
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GRV_DATA_X_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GRV_DATA_X_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.gravity_x = reg_value_lsb + (reg_value_msb<<8);
+	BNO055->processed_data.gravity_vector.x = reg_value_lsb + (reg_value_msb<<8);
 
 
 	xSemaphoreTake(I2CControllerProtect,15);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GRV_DATA_Y_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GRV_DATA_Y_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.gravity_y = reg_value_lsb + (reg_value_msb<<8);
+	BNO055->processed_data.gravity_vector.y = reg_value_lsb + (reg_value_msb<<8);
 
 
 	xSemaphoreTake(I2CControllerProtect,15);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GRV_DATA_Z_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GRV_DATA_Z_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.gravity_z = reg_value_lsb + (reg_value_msb<<8);
+	BNO055->processed_data.gravity_vector.z = reg_value_lsb + (reg_value_msb<<8);
 }
 
 /*
@@ -354,21 +354,21 @@ void BNO055_ReadGyro(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CContro
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GYR_DATA_X_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GYR_DATA_X_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->raw_data.gyro_x = reg_value_lsb + (reg_value_msb<<8);
+	BNO055->raw_data.gyroscope.x = reg_value_lsb + (reg_value_msb<<8);
 
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GYR_DATA_Y_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GYR_DATA_Y_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->raw_data.gyro_y = reg_value_lsb + (reg_value_msb<<8);
+	BNO055->raw_data.gyroscope.y = reg_value_lsb + (reg_value_msb<<8);
 
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GYR_DATA_Z_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_GYR_DATA_Z_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->raw_data.gyro_z = reg_value_lsb + (reg_value_msb<<8);
+	BNO055->raw_data.gyroscope.z = reg_value_lsb + (reg_value_msb<<8);
 }
 
 /*
@@ -387,19 +387,33 @@ void BNO055_ReadAccel(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CContr
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_ACC_DATA_X_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_ACC_DATA_X_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->raw_data.accelerometer_x = reg_value_lsb + (reg_value_msb<<8);
+	BNO055->raw_data.accelerometer.x = ((float)(reg_value_lsb + (reg_value_msb<<8))/ (float) accelScale);	//The minus sign is only use to sync axis value to board schematic
+
+	/*In order to scale the acceleration correclty on -327m/s^2 to +327m/s^2*/
+	if(BNO055->raw_data.accelerometer.x > 327.68){
+		BNO055->raw_data.accelerometer.x = BNO055->raw_data.accelerometer.x - 655.36;
+	}
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_ACC_DATA_Y_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_ACC_DATA_Y_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->raw_data.accelerometer_y = reg_value_lsb + (reg_value_msb<<8);
+	BNO055->raw_data.accelerometer.y = ((float)(reg_value_lsb + (reg_value_msb<<8))/ (float) accelScale);
+
+	if(BNO055->raw_data.accelerometer.y > 327.68){
+		BNO055->raw_data.accelerometer.y = BNO055->raw_data.accelerometer.y - 655.36;
+	}
+
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_ACC_DATA_Z_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_ACC_DATA_Z_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->raw_data.accelerometer_z = reg_value_lsb + (reg_value_msb<<8);
+	BNO055->raw_data.accelerometer.z = ((float)(reg_value_lsb + (reg_value_msb<<8))/ (float) accelScale);
+
+	if(BNO055->raw_data.accelerometer.z > 327.68){
+		BNO055->raw_data.accelerometer.z = BNO055->raw_data.accelerometer.z - 655.36;
+	}
 }
 
 /*
@@ -417,21 +431,21 @@ void BNO055_ReadMagneter(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CCo
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_MAG_DATA_X_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_MAG_DATA_X_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->raw_data.magnetometer_x = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) magScale);
+	BNO055->raw_data.magnetometer.x = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) magScale);
 
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_MAG_DATA_Y_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_MAG_DATA_Y_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->raw_data.magnetometer_y = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) magScale);
+	BNO055->raw_data.magnetometer.y = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) magScale);
 
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_MAG_DATA_Z_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_MAG_DATA_Z_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->raw_data.magnetometer_z = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) magScale);
+	BNO055->raw_data.magnetometer.z = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) magScale);
 }
 /*
  * Function use to read quaternion data from IMU (from fusion sensor)
@@ -448,25 +462,25 @@ void BNO055_ReadQua(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CControl
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_QUA_DATA_W_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_QUA_DATA_W_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.quaternion_w = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) quaScale);
+	BNO055->processed_data.quaternions.w = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) quaScale);
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_QUA_DATA_X_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_QUA_DATA_X_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.quaternion_x = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) quaScale);
+	BNO055->processed_data.quaternions.x = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) quaScale);
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_QUA_DATA_Y_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_QUA_DATA_Y_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.quaternion_y = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) quaScale);
+	BNO055->processed_data.quaternions.y = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) quaScale);
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_QUA_DATA_Z_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_QUA_DATA_Z_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.quaternion_z = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) quaScale);
+	BNO055->processed_data.quaternions.z = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) quaScale);
 }
 
 
@@ -485,22 +499,32 @@ void BNO055_ReadLina(I2C_HandleTypeDef *I2C,BNO055_t *BNO055,osMutexId I2CContro
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_LIA_DATA_X_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_LIA_DATA_X_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.linear_accel_x = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) accelScale);
+	BNO055->processed_data.linear_acceleration.x = ((float)(reg_value_lsb + (reg_value_msb<<8))/ (float) accelScale);
+
+	if(BNO055->processed_data.linear_acceleration.x > 327.68){
+		BNO055->processed_data.linear_acceleration.x = BNO055->processed_data.linear_acceleration.x - 655.36;
+	}
 
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_LIA_DATA_Y_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_LIA_DATA_Y_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.linear_accel_y = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) accelScale);
+	BNO055->processed_data.linear_acceleration.y = ((float)(reg_value_lsb + (reg_value_msb<<8))/ (float) accelScale);
 
+	if(BNO055->processed_data.linear_acceleration.y > 327.68){
+		BNO055->processed_data.linear_acceleration.y = BNO055->processed_data.linear_acceleration.y - 655.36;
+	}
 
 	xSemaphoreTake(I2CControllerProtect,25);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_LIA_DATA_Z_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_LIA_DATA_Z_MSB, 1, &reg_value_msb, 1, 10);
 	xSemaphoreGive(I2CControllerProtect);
-	BNO055->processed_data.linear_accel_z = (float) ((reg_value_lsb + (reg_value_msb<<8)) / (float) accelScale);
-	//In order to match with physical data as axis is map in strange way
+	BNO055->processed_data.linear_acceleration.z = ((float)(reg_value_lsb + (reg_value_msb<<8)) / (float) accelScale);
+
+	if(BNO055->processed_data.linear_acceleration.z > 327.68){
+		BNO055->processed_data.linear_acceleration.z = BNO055->processed_data.linear_acceleration.z - 655.36;
+	}
 
 }
 
@@ -517,10 +541,10 @@ void BNO055_ReadEuler_Roll(I2C_HandleTypeDef *I2C,BNO055_t *BNO055){
 
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_EUL_ROLL_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_EUL_ROLL_MSB, 1, &reg_value_msb, 1, 10);
-	BNO055->processed_data.euler_roll = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) eulerScale);
+	BNO055->processed_data.euler_angles.y = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) eulerScale);
 	/*Make sure the data are rotating clockwise*/
-	if(BNO055->processed_data.euler_roll > 2000){
-		BNO055->processed_data.euler_roll = BNO055->processed_data.euler_roll - 4096;
+	if(BNO055->processed_data.euler_angles.y > 2000){
+		BNO055->processed_data.euler_angles.y = BNO055->processed_data.euler_angles.y - 4096;
 	}
 }
 /*Function use to read the euler pitch value from an IMU
@@ -536,10 +560,10 @@ void BNO055_ReadEuler_Pitch(I2C_HandleTypeDef *I2C,BNO055_t *BNO055){
 
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_EUL_PITCH_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_EUL_PITCH_MSB, 1, &reg_value_msb, 1, 10);
-	BNO055->processed_data.euler_pitch = (float) ((reg_value_lsb + (reg_value_msb<<8))/(float) eulerScale);
+	BNO055->processed_data.euler_angles.x = (float) ((reg_value_lsb + (reg_value_msb<<8))/(float) eulerScale);
 	/*Make sure the data are rotating clockwise*/
-	if(BNO055->processed_data.euler_pitch > 2000){
-		BNO055->processed_data.euler_pitch = BNO055->processed_data.euler_pitch - 4096;
+	if(BNO055->processed_data.euler_angles.x > 2000){
+		BNO055->processed_data.euler_angles.x = BNO055->processed_data.euler_angles.x - 4096;
 	}
 }
 /*Function use to read the euler yaw value from an IMU
@@ -555,5 +579,5 @@ void BNO055_ReadEuler_Yaw(I2C_HandleTypeDef *I2C,BNO055_t *BNO055){
 
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_EUL_HEADING_LSB, 1, &reg_value_lsb, 1, 10);
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_EUL_HEADING_MSB, 1, &reg_value_msb, 1, 10);
-	BNO055->processed_data.euler_heading = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) eulerScale);
+	BNO055->processed_data.euler_angles.z = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) eulerScale);
 }

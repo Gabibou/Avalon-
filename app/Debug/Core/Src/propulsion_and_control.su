@@ -2,6 +2,6 @@
 ../Core/Src/propulsion_and_control.c:22:6:PropulsionAndControl_UpdateLeftFlaps	24	static
 ../Core/Src/propulsion_and_control.c:27:6:PropulsionAndControl_UpdateRightFlaps	24	static
 ../Core/Src/propulsion_and_control.c:33:6:PropulsionAndControl_Init	24	static
-../Core/Src/propulsion_and_control.c:89:6:PropulsionAndControl_EscSetValue	24	static
-../Core/Src/propulsion_and_control.c:105:6:PropulsionAndControl_LeftServoSetValue	24	static
-../Core/Src/propulsion_and_control.c:121:6:PropulsionAndControl_RightServoSetValue	24	static
+../Core/Src/propulsion_and_control.c:79:6:PropulsionAndControl_EscSetValue	24	static
+../Core/Src/propulsion_and_control.c:95:6:PropulsionAndControl_LeftServoSetValue	24	static
+../Core/Src/propulsion_and_control.c:111:6:PropulsionAndControl_RightServoSetValue	24	static

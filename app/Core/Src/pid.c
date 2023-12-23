@@ -16,17 +16,17 @@ DESCRIPTION - Basic driver for the mpu6050 accelerometer.
 
 //As the gyro got the front at x axis then rotation on X mean roll / rotation on Y mean pitch and rotation on Z mean yaw
 float32_t Pid_CalculatePitchError(COMMAND_t *command,BNO055_t *Accelerometer){
-	float32_t res = (Accelerometer->processed_data.euler_pitch)-(command->pitch_angle);
+	float32_t res = (Accelerometer->processed_data.euler_angles.x)-(command->pitch_angle);
 	return res;
 }
 
 float32_t Pid_CalculateYawError(COMMAND_t *command,BNO055_t *Accelerometer){
-	float32_t res = (Accelerometer->processed_data.euler_heading)-(command->yaw_angle);
+	float32_t res = (Accelerometer->processed_data.euler_angles.z)-(command->yaw_angle);
 	return res;
 }
 
 float32_t Pid_CalculateRollError(COMMAND_t *command,BNO055_t *Accelerometer){
-	float32_t res = (Accelerometer->processed_data.euler_roll)-(command->roll_angle);
+	float32_t res = (Accelerometer->processed_data.euler_angles.y)-(command->roll_angle);
 	return res;
 }
 
