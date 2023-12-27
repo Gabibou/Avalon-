@@ -48,7 +48,7 @@ void PropulsionAndControl_Init(PROPULSION_t *propulsion,uint32_t esc_pin,GPIO_Ty
 	propulsion->timer = timer_entity;
 
 	//put the flaps at minimum
-	osDelay(20);
+	HAL_Delay(20);
 	propulsion->servo_left_timer_val = MIN_LEFT_EXTENSION;
 	PropulsionAndControl_UpdateLeftFlaps(propulsion);
 
@@ -57,7 +57,7 @@ void PropulsionAndControl_Init(PROPULSION_t *propulsion,uint32_t esc_pin,GPIO_Ty
 	PropulsionAndControl_UpdateRightFlaps(propulsion);
 
 	//put the flaps at maximum
-	osDelay(1500);
+	HAL_Delay(1500);
 	propulsion->servo_left_timer_val = MAX_LEFT_EXTENSION;
 	PropulsionAndControl_UpdateLeftFlaps(propulsion);
 
@@ -65,7 +65,7 @@ void PropulsionAndControl_Init(PROPULSION_t *propulsion,uint32_t esc_pin,GPIO_Ty
 	propulsion->servo_right_timer_val = MAX_RIGHT_EXTENSION;
 	PropulsionAndControl_UpdateRightFlaps(propulsion);
 
-	osDelay(1500);
+	HAL_Delay(1500);
 	propulsion->servo_left_timer_val = (MAX_LEFT_EXTENSION+MIN_LEFT_EXTENSION)/2;
 	PropulsionAndControl_UpdateLeftFlaps(propulsion);
 

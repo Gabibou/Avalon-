@@ -22,6 +22,7 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
+#include "usbd_cdc_if.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -231,8 +232,6 @@ void StartRoll_PID(void const * argument)
 
 		/*Compensate PID*/
 		Pid_CompensateRoll(&hpid_roll, &COMMAND_struct, &IMU_BNO055_struct, &HDW_CONTROLLER_struct);
-
-
 		vTaskDelay(150);
 	}
   /* USER CODE END StartRoll_PID */
@@ -259,7 +258,6 @@ void StartPitch_PID(void const * argument)
 
 		/*Compensate PID */
 		Pid_CompensatePitch(&hpid_pitch, &COMMAND_struct, &IMU_BNO055_struct, &HDW_CONTROLLER_struct);
-
 		vTaskDelay(150);
   }
   /* USER CODE END StartPitch_PID */
@@ -286,7 +284,6 @@ void StartYaw_PID(void const * argument)
 
 		/*Compensate PID step 1 - error calculation */
 		Pid_CompensateYaw(&hpid_yaw, &COMMAND_struct, &IMU_BNO055_struct, &HDW_CONTROLLER_struct);
-
 		vTaskDelay(150);
   }
   /* USER CODE END StartYaw_PID */
@@ -314,7 +311,7 @@ void StartPressureMonitor(void const * argument)
 	  BMP390_ReadTemp(&hi2c2, &ALTIMETER_struct, I2C_ControllerHandle);
 	  BMP390_GetRelativeAltitude(&ALTIMETER_struct);
 	  /*Recalibrate sensor if gps data move too much*/
-		vTaskDelay(500);
+	  vTaskDelay(500);
   }
   /* USER CODE END StartPressureMonitor */
 }
@@ -351,9 +348,9 @@ void StartGPS(void const * argument)
 /* USER CODE END Header_StartMainTask */
 void StartMainTask(void const * argument)
 {
-	/* USER CODE BEGIN StartMainTask */
-	xSemaphoreTake(HG_PROTECTION_SEMHandle,9999999999999999);
-	xSemaphoreTake(HG_PROTECTION_SEMHandle,9999999999999999);
+  /* USER CODE BEGIN StartMainTask */
+	  xSemaphoreTake(HG_PROTECTION_SEMHandle,9999999999999999);
+	  xSemaphoreTake(HG_PROTECTION_SEMHandle,9999999999999999);
 	for(int i=0;i<5;i++){
 		htim3.Instance->CCR1 = 1000;
 		vTaskDelay(100);
@@ -363,9 +360,9 @@ void StartMainTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+
 	  BNO055_ReadLina(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
 	  BNO055_ReadAccel(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
-
 	  vTaskDelay(1000);
   }
   /* USER CODE END StartMainTask */
