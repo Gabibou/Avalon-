@@ -357,13 +357,18 @@ void StartMainTask(void const * argument)
 		htim3.Instance->CCR1 = 0;
 		vTaskDelay(100);
 	}
+	uint8_t test[100];
   /* Infinite loop */
   for(;;)
   {
+	  HAL_UART_Transmit(&huart5, "AT\r\n", 8, 100);
+	  HAL_UART_Receive(&huart5, &test, 100, 100);
+//	  BNO055_ReadLina(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
+//	  BNO055_ReadAccel(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
+//	  BNO055_ComputeSpeed(&hi2c2, &IMU_BNO055_struct);
 
-	  BNO055_ReadLina(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
-	  BNO055_ReadAccel(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
-	  vTaskDelay(1000);
+
+	  vTaskDelay(500);
   }
   /* USER CODE END StartMainTask */
 }

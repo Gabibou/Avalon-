@@ -6,4 +6,4 @@
 ../Core/Src/app_freertos.c:299:6:StartPressureMonitor	1
 ../Core/Src/app_freertos.c:326:6:StartGPS	1
 ../Core/Src/app_freertos.c:349:6:StartMainTask	2
-../Core/Src/app_freertos.c:378:6:StartBatteryMonitoring	1
+../Core/Src/app_freertos.c:383:6:StartBatteryMonitoring	1

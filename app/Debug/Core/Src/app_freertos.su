@@ -5,5 +5,5 @@
 ../Core/Src/app_freertos.c:273:6:StartYaw_PID	16	static
 ../Core/Src/app_freertos.c:299:6:StartPressureMonitor	16	static
 ../Core/Src/app_freertos.c:326:6:StartGPS	16	static
-../Core/Src/app_freertos.c:349:6:StartMainTask	24	static
-../Core/Src/app_freertos.c:378:6:StartBatteryMonitoring	16	static
+../Core/Src/app_freertos.c:349:6:StartMainTask	120	static
+../Core/Src/app_freertos.c:383:6:StartBatteryMonitoring	16	static

@@ -25,3 +25,4 @@
 ../Core/Src/bno055.c:537:6:BNO055_ReadEuler_Roll	40	static
 ../Core/Src/bno055.c:556:6:BNO055_ReadEuler_Pitch	40	static
 ../Core/Src/bno055.c:575:6:BNO055_ReadEuler_Yaw	40	static
+../Core/Src/bno055.c:591:6:BNO055_ComputeSpeed	40	static

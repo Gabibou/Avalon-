@@ -568,7 +568,7 @@ void BNO055_ReadEuler_Pitch(I2C_HandleTypeDef *I2C,BNO055_t *BNO055){
 }
 /*Function use to read the euler yaw value from an IMU
  * @INPUT - I2C interface struct
- * @INPUT - IMU struc
+ * @INPUT - IMU struct
  * @OUTPUT - None
  * @INFORMATIONS - If use with freertos or other reeltime os please use a semaphore/mutex to protect I2C interface
  */
@@ -581,3 +581,26 @@ void BNO055_ReadEuler_Yaw(I2C_HandleTypeDef *I2C,BNO055_t *BNO055){
 	HAL_I2C_Mem_Read(I2C, BNO055_I2C_ADDR, BNO055_EUL_HEADING_MSB, 1, &reg_value_msb, 1, 10);
 	BNO055->processed_data.euler_angles.z = (float) ((reg_value_lsb + (reg_value_msb<<8))/ (float) eulerScale);
 }
+
+/*Function use to compute the aircraft crusing speed
+ * @INPUT - I2C interface struct
+ * @INPUT - IMU struct
+ * @INFORMATIONS - Need to be call after a ReadAccel function in order to work correctly
+ * Tick should be increment every ms in order to gather correct data
+ */
+void BNO055_ComputeSpeed(I2C_HandleTypeDef *I2C,BNO055_t *BNO055){
+
+	float speed_vector_x;
+	float current_acceleration =BNO055->raw_data.accelerometer.x;
+	uint32_t current_tick = HAL_GetTick();
+	float delta_acceleration = (current_acceleration - BNO055->reserved_for_operation.previous_acceleration.x);
+	uint32_t delta_tick = (current_tick - BNO055->reserved_for_operation.last_call_tick.x);
+
+
+	speed_vector_x = (float)(delta_tick/1000)*current_acceleration;
+	BNO055->processed_data.speed_vector.x = speed_vector_x;
+}
+
+
+
+

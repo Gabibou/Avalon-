@@ -133,7 +133,7 @@
 #define BNO055_I2C_ADDR 0x50	//Can also be 0x29 if the COM3 pin is connected to VCC
 #define BNO055_HG_THRESHOLD 0x50 //Aprox 1.5G 0x5F
 #define BNO055_HG_DURATION 0x40 //Aprox 200ms 0x63
-
+#define SPEED_FILTER_SIZE 5
 
 //---------------------------------------------------------------- TYPE DEF ----------------------------------------------------------------
 typedef enum {  // BNO-55 operation modes
@@ -179,6 +179,11 @@ typedef struct{
 	float z;
 }Quaternion_axis_t;
 
+typedef struct{
+	uint32_t x;
+	uint32_t y;
+	uint32_t z;
+}Tick_t;
 
 typedef struct{
 	//magnetometer raw value
@@ -207,7 +212,25 @@ typedef struct{
 	//Calculated by the sensor (probably use some basic formula like p=mg)
 	Axis_t gravity_vector;
 
+	//Speed vectors found by integrating acceleration vectors
+	Axis_t speed_vector;
+
+	//position vectors found by integrating speed vectors
+	Axis_t position_vector;
+
 }BNO055_calculated_t;
+
+typedef struct{
+
+	/*previous acceleration use to compute speed*/
+	Axis_t previous_acceleration;
+
+	/*Store the tick count of the last function call*/
+	Tick_t last_call_tick;
+
+	float speed_filtering[SPEED_FILTER_SIZE];
+
+}BNO055_reserved_t;
 
 typedef struct{
 
@@ -216,6 +239,9 @@ typedef struct{
 
 	//struct use to stora all processed data calculated from the sensor
 	BNO055_calculated_t processed_data;
+
+	//reserved space use to compute speed and acceleration
+	BNO055_reserved_t reserved_for_operation;
 
 	//The IMU can work using many mode , the selected one should be writen here
 	bno055_opmode_t operational_mode;
@@ -257,5 +283,7 @@ void BNO055_SetHighGDuration(I2C_HandleTypeDef *I2C,uint8_t duration);
 void BNO055_ReadEuler_Yaw(I2C_HandleTypeDef *I2C,BNO055_t *BNO055);
 void BNO055_ReadEuler_Pitch(I2C_HandleTypeDef *I2C,BNO055_t *BNO055);
 void BNO055_ReadEuler_Roll(I2C_HandleTypeDef *I2C,BNO055_t *BNO055);
+/*Specific computation function*/
+void BNO055_ComputeSpeed(I2C_HandleTypeDef *I2C,BNO055_t *BNO055);
 
 #endif /* INC_BNO055_H_ */
