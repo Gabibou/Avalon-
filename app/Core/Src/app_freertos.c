@@ -22,7 +22,6 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
-#include "usbd_cdc_if.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -81,6 +80,7 @@ osThreadId PressureMonitorHandle;
 osThreadId GPSHandle;
 osThreadId MainTaskHandle;
 osThreadId BatteryMonitoriHandle;
+osThreadId TelemetryHandle;
 osMutexId I2C_ControllerHandle;
 osSemaphoreId GPS_UART_SemaphoreHandle;
 osSemaphoreId HG_PROTECTION_SEMHandle;
@@ -98,6 +98,7 @@ void StartPressureMonitor(void const * argument);
 void StartGPS(void const * argument);
 void StartMainTask(void const * argument);
 void StartBatteryMonitoring(void const * argument);
+void StartTelemetry(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -179,6 +180,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of BatteryMonitori */
   osThreadDef(BatteryMonitori, StartBatteryMonitoring, osPriorityLow, 0, 128);
   BatteryMonitoriHandle = osThreadCreate(osThread(BatteryMonitori), NULL);
+
+  /* definition and creation of Telemetry */
+  osThreadDef(Telemetry, StartTelemetry, osPriorityIdle, 0, 256);
+  TelemetryHandle = osThreadCreate(osThread(Telemetry), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -361,11 +366,10 @@ void StartMainTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  HAL_UART_Transmit(&huart5, "AT\r\n", 8, 100);
-	  HAL_UART_Receive(&huart5, &test, 100, 100);
+
 //	  BNO055_ReadLina(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
-//	  BNO055_ReadAccel(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
-//	  BNO055_ComputeSpeed(&hi2c2, &IMU_BNO055_struct);
+	  BNO055_ReadAccel(&hi2c2, &IMU_BNO055_struct, I2C_ControllerHandle);
+	  BNO055_ComputeSpeed(&hi2c2, &IMU_BNO055_struct);
 
 
 	  vTaskDelay(500);
@@ -393,6 +397,25 @@ void StartBatteryMonitoring(void const * argument)
     vTaskDelay(5000);
   }
   /* USER CODE END StartBatteryMonitoring */
+}
+
+/* USER CODE BEGIN Header_StartTelemetry */
+/**
+* @brief Function implementing the Telemetry thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTelemetry */
+void StartTelemetry(void const * argument)
+{
+  /* USER CODE BEGIN StartTelemetry */
+	WIOE5_Init(&huart5);
+  /* Infinite loop */
+  for(;;)
+  {
+	  vTaskDelay(1000);
+  }
+  /* USER CODE END StartTelemetry */
 }
 
 /* Private application code --------------------------------------------------*/

@@ -38,6 +38,7 @@ extern "C" {
 #include "bmp390.h"
 #include "adc_voltage_current_measurement.h"
 #include "l80-m39.h"
+#include "at25x041b.h"
 #include "lora_wioe5.h"
 /* USER CODE END Includes */
 

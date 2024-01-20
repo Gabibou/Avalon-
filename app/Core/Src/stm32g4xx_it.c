@@ -59,7 +59,6 @@ extern osSemaphoreId HG_PROTECTION_SEMHandle;
 extern PCD_HandleTypeDef hpcd_USB_FS;
 extern DMA_HandleTypeDef hdma_adc2;
 extern UART_HandleTypeDef huart4;
-extern UART_HandleTypeDef huart5;
 extern TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN EV */
@@ -234,20 +233,6 @@ void UART4_IRQHandler(void)
   xSemaphoreGiveFromISR(GPS_UART_SemaphoreHandle,pdFALSE);
 
   /* USER CODE END UART4_IRQn 1 */
-}
-
-/**
-  * @brief This function handles UART5 global interrupt / UART5 wake-up interrupt through EXTI line 35.
-  */
-void UART5_IRQHandler(void)
-{
-  /* USER CODE BEGIN UART5_IRQn 0 */
-
-  /* USER CODE END UART5_IRQn 0 */
-  HAL_UART_IRQHandler(&huart5);
-  /* USER CODE BEGIN UART5_IRQn 1 */
-
-  /* USER CODE END UART5_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

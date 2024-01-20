@@ -1,0 +1,2 @@
+../Core/Src/lora_wioe5.c:17:9:WIOE5_Init	2
+../Core/Src/lora_wioe5.c:42:9:WIOE5_ChannelSwitch	1
