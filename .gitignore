@@ -4,3 +4,7 @@
 *.d
 *.map
 *.su
+*.elf
+*.cyclo
+*.bin
+*.hex

@@ -1,4 +1,0 @@
-../Core/Src/adc_voltage_current_measuremet.c:12:6:Battery_ReadBatteryVoltage	16	static
-../Core/Src/adc_voltage_current_measuremet.c:16:6:Battery_ReadCurrent3V3	24	static
-../Core/Src/adc_voltage_current_measuremet.c:21:6:Battery_ReadCurrent5V	24	static
-../Core/Src/adc_voltage_current_measuremet.c:26:6:Battery_RemaningTime	24	static

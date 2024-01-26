@@ -1,2 +1,0 @@
-../Core/Src/lora_wioe5.c:17:9:WIOE5_Init	120	static
-../Core/Src/lora_wioe5.c:42:9:WIOE5_ChannelSwitch	144	static
