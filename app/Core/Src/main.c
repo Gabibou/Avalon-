@@ -89,6 +89,7 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+	SCB->VTOR = 0x08004000;
 	__enable_irq();
   /* USER CODE END 1 */
 
@@ -121,6 +122,13 @@ int main(void)
   MX_USB_Device_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+
+  while(1){
+	  HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+	  HAL_Delay(1000);
+  }
+
+
   /*Timer start flaps and throttle + buzzer*/
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);

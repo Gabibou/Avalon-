@@ -48,7 +48,7 @@
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
-
+void JumpToApplication(uint32_t application_addr);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -85,13 +85,10 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-  __disable_irq();
+  HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 
-  /*Create a function pointer that point on reset handler of application*/
-  uint32_t go_address = *((volatile uint32_t*) (0x08004004));
-  void (*jump_to_app)(void) = (void *)go_address;
-  jump_to_app();
+
+  JumpToApplication(APP_ADDRESS);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -176,29 +173,36 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void JumpToApplication(uint32_t application_addr){
 
-/* USER CODE END 4 */
+	  /*Init a function pointer*/
+	  uint32_t go_address = *((volatile uint32_t*) (application_addr + 4));
+	  void (*jump_to_app)(void) = (void *)go_address;
 
-/**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM1 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  /* USER CODE BEGIN Callback 0 */
+	  /*Uninit all peripheral use by the bootloader*/
+	  HAL_GPIO_DeInit(LED_GPIO_Port, LED_Pin);
 
-  /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM1) {
-    HAL_IncTick();
-  }
-  /* USER CODE BEGIN Callback 1 */
+	  /*Disable clock*/
+	  HAL_RCC_DeInit();
 
-  /* USER CODE END Callback 1 */
+	  /*disable all IRQ*/
+	  __disable_irq();
+
+	  /*Relocate vector table*/
+	  SCB->VTOR = application_addr;
+
+	  /*Set main stack pointer pas sure*/
+	  __set_MSP(*(volatile uint32_t*) application_addr);
+
+	  /*Reset systick timer*/
+	  SysTick->CTRL = 0;
+	  SysTick->LOAD = 0;
+	  SysTick->VAL = 0;
+
+	  /*Jump*/
+	  jump_to_app();
 }
+/* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.

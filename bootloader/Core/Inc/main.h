@@ -61,7 +61,7 @@ void Error_Handler(void);
 #define LED_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-
+#define APP_ADDRESS 0x08004000
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
