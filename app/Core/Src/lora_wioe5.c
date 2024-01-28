@@ -29,8 +29,12 @@ uint8_t WIOE5_Init(UART_HandleTypeDef *huart){
 
 	WIOE5_ReadFirmwareVersion(firmware_version, huart);
 
-
+	/*Set lora channel*/
 	WIOE5_ChannelSwitch(LORA_CHANNEL_INIT,huart);
+	/*Set data rate*/
+	WIOE5_SetDataRate(LORA_868Mhz_FSK_50000BPS,huart);
+	/*Set transmit power*/
+	WIOE5_SetTxPower(LORA_868Mhz_16dBm, huart);
 
 	return res;
 }
@@ -63,8 +67,6 @@ uint8_t WIOE5_ChannelSwitch(uint8_t channel,UART_HandleTypeDef *huart){
  * INPUT:
  *    @version_output is an array of
  *	  @huart is a pointer on uart handdle
- * OUTPUT:
- * 	  @res is an integer use to check error
  * */
 void WIOE5_ReadFirmwareVersion(uint8_t version_output[],UART_HandleTypeDef *huart){
 
@@ -80,4 +82,49 @@ void WIOE5_ReadFirmwareVersion(uint8_t version_output[],UART_HandleTypeDef *huar
 	}
 }
 
+/* Function use to set data rate
+ * INPUT:
+ *    @dr is an integer use to set data rate
+ *	  @huart is a pointer on uart handdle
+ *OUTPUT:
+ * 	  @res is an integer use to check error
+ * */
+uint8_t WIOE5_SetDataRate(uint8_t dr,UART_HandleTypeDef *huart){
 
+	uint8_t querry[25] = "AT+DR=";
+	querry[6] =  (dr+'0');
+	uint8_t string[100];
+	uint8_t res = 0;
+
+	strcat(querry, "\r\n");
+	HAL_UART_Transmit(huart, querry, sizeof(querry), 100);
+	HAL_UART_Receive(huart, string, 100,1000);
+	if(string[0]!='+'){
+		res++;
+	}
+	return res;
+}
+
+
+/* Function use to set transmit power
+ * INPUT:
+ *    @tx_power is an integer use to set data rate
+ *	  @huart is a pointer on uart handdle
+ *OUTPUT:
+ * 	  @res is an integer use to check error
+ * */
+uint8_t WIOE5_SetTxPower(uint8_t tx_power,UART_HandleTypeDef *huart){
+
+	uint8_t querry[25] = "AT+POWER=";
+	querry[6] =  (tx_power+'0');
+	uint8_t string[100];
+	uint8_t res = 0;
+
+	strcat(querry, "\r\n");
+	HAL_UART_Transmit(huart, querry, sizeof(querry), 100);
+	HAL_UART_Receive(huart, string, 100,1000);
+	if(string[0]!='+'){
+		res++;
+	}
+	return res;
+}
