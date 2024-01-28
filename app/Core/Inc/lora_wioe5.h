@@ -16,7 +16,7 @@ uint8_t WIOE5_ChannelSwitch(uint8_t channel,UART_HandleTypeDef *huart);
 void WIOE5_ReadFirmwareVersion(uint8_t version_output[],UART_HandleTypeDef *huart);
 uint8_t WIOE5_SetDataRate(uint8_t dr,UART_HandleTypeDef *huart);
 uint8_t WIOE5_SetTxPower(uint8_t tx_power,UART_HandleTypeDef *huart);
-
+uint8_t WIOE5_SendData(uint32_t data,UART_HandleTypeDef *huart);
 /*define */
 #define LORA_CHANNEL_INIT 3
 
@@ -29,13 +29,13 @@ uint8_t WIOE5_SetTxPower(uint8_t tx_power,UART_HandleTypeDef *huart);
 #define LORA_868Mhz_SF7_11000BPS 6
 #define LORA_868Mhz_FSK_50000BPS 7
 
-#define LORA_868Mhz_16dBm 0
-#define LORA_868Mhz_14dBm 1
-#define LORA_868Mhz_12dBm 2
-#define LORA_868Mhz_10dBm 3
-#define LORA_868Mhz_8dBm 4
-#define LORA_868Mhz_6dBm 5
-#define LORA_868Mhz_4dBm 6
-#define LORA_868Mhz_2dBm 7
+#define LORA_868Mhz_16dBm 16
+#define LORA_868Mhz_14dBm 14
+#define LORA_868Mhz_12dBm 12
+#define LORA_868Mhz_10dBm 10
+#define LORA_868Mhz_8dBm 8
+#define LORA_868Mhz_6dBm 6
+#define LORA_868Mhz_4dBm 4
+#define LORA_868Mhz_2dBm 2
 
 #endif /* INC_LORA_WIOE5_H_ */

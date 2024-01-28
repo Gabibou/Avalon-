@@ -36,6 +36,9 @@ uint8_t WIOE5_Init(UART_HandleTypeDef *huart){
 	/*Set transmit power*/
 	WIOE5_SetTxPower(LORA_868Mhz_16dBm, huart);
 
+	/*Send 0x1234 5678*/
+	WIOE5_SendData(305419896, huart);
+
 	return res;
 }
 
@@ -51,7 +54,7 @@ uint8_t WIOE5_ChannelSwitch(uint8_t channel,UART_HandleTypeDef *huart){
 
 	uint8_t querry[25] = "AT+CH=";
 	querry[6] =  (channel+'0');
-	uint8_t string[100];
+	uint8_t string[100] = {0};
 	uint8_t res = 0;
 
 	strcat(querry, "\r\n");
@@ -70,7 +73,7 @@ uint8_t WIOE5_ChannelSwitch(uint8_t channel,UART_HandleTypeDef *huart){
  * */
 void WIOE5_ReadFirmwareVersion(uint8_t version_output[],UART_HandleTypeDef *huart){
 
-	uint8_t string[100];
+	uint8_t string[100] = {0};
 	uint8_t index = 6;
 
 	HAL_UART_Transmit(huart, "AT+VER\r\n", sizeof("AT+VER\r\n"), 100);
@@ -93,7 +96,7 @@ uint8_t WIOE5_SetDataRate(uint8_t dr,UART_HandleTypeDef *huart){
 
 	uint8_t querry[25] = "AT+DR=";
 	querry[6] =  (dr+'0');
-	uint8_t string[100];
+	uint8_t string[100] = {0};
 	uint8_t res = 0;
 
 	strcat(querry, "\r\n");
@@ -116,15 +119,58 @@ uint8_t WIOE5_SetDataRate(uint8_t dr,UART_HandleTypeDef *huart){
 uint8_t WIOE5_SetTxPower(uint8_t tx_power,UART_HandleTypeDef *huart){
 
 	uint8_t querry[25] = "AT+POWER=";
-	querry[6] =  (tx_power+'0');
-	uint8_t string[100];
+	uint8_t string[100] = {0};
 	uint8_t res = 0;
 
+	if(tx_power < 10){	/*Two digit at least*/
+		querry[9] =  (tx_power+'0');
+	}
+	else{
+		querry[9] =  ((tx_power/10)+'0');
+		querry[10] =  ((tx_power%10)+'0');
+	}
 	strcat(querry, "\r\n");
 	HAL_UART_Transmit(huart, querry, sizeof(querry), 100);
 	HAL_UART_Receive(huart, string, 100,1000);
 	if(string[0]!='+'){
 		res++;
+	}
+	return res;
+}
+/* Function use to transmit 4 byte
+ * INPUT:
+ *    @data is an integer - this is the 4 byte to send
+ *	  @huart is a pointer on uart handdle
+ *OUTPUT:
+ * 	  @res is an integer use to check error
+ * */
+uint8_t WIOE5_SendData(uint32_t data,UART_HandleTypeDef *huart){
+
+	uint8_t querry[30] = "AT+MSGHEX=";
+	querry[10] = '"';
+	uint8_t hex_char = 0;
+	uint8_t res;
+	uint8_t string[100] = {0};
+
+	/*Split 32 bits into 4 byte*/
+	for(int i=0;i<8;i++){
+		hex_char = (data&(0xf<<(i*4)))>>(i*4);
+		if(hex_char > 10){
+			hex_char = hex_char + 55;
+		}
+		else{
+			hex_char = hex_char + 48;
+		}
+		querry[11+i] = hex_char;
+	}
+	querry[19] = '"';
+	strcat(querry,"\r\n");
+	HAL_UART_Transmit(huart, querry, sizeof(querry), 100);
+	HAL_UART_Receive(huart, string, 100,1000);
+
+	/*Check if receive a DONE*/
+	if(strcmp("+MSGHEX: Start\r\n",string)!=0x00){
+		res = 1;
 	}
 	return res;
 }
