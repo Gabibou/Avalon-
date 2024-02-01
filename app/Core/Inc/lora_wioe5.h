@@ -17,6 +17,8 @@ void WIOE5_ReadFirmwareVersion(uint8_t version_output[],UART_HandleTypeDef *huar
 uint8_t WIOE5_SetDataRate(uint8_t dr,UART_HandleTypeDef *huart);
 uint8_t WIOE5_SetTxPower(uint8_t tx_power,UART_HandleTypeDef *huart);
 uint8_t WIOE5_SendData(uint32_t data,UART_HandleTypeDef *huart);
+uint8_t WIOE5_FactoryReset(UART_HandleTypeDef *huart);
+uint8_t WIOE5_SendString(UART_HandleTypeDef *huart,uint8_t string[],uint32_t string_size);
 /*define */
 #define LORA_CHANNEL_INIT 3
 

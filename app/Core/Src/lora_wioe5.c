@@ -20,6 +20,12 @@ uint8_t WIOE5_Init(UART_HandleTypeDef *huart){
 	uint8_t string[100] = {0};
 	uint8_t firmware_version[10] = {0};
 
+	/* Reset WIOE5 configuration */
+	WIOE5_FactoryReset(huart);
+
+	WIOE5_SendString(huart, "ABCDEF", 6);
+
+
 	/*Check for correct wiring*/
 	HAL_UART_Transmit(huart, "AT\r\n", 8, 100);
 	HAL_UART_Receive(huart, string, 100,1000);
@@ -172,5 +178,70 @@ uint8_t WIOE5_SendData(uint32_t data,UART_HandleTypeDef *huart){
 	if(strcmp("+MSGHEX: Start\r\n",string)!=0x00){
 		res = 1;
 	}
+	return res;
+}
+
+/* Function use to reset the WIOE5 settings
+ * INPUT:
+ *	  @huart is a pointer on uart handdle
+ *OUTPUT:
+ * 	  @res is an integer use to check error
+ * */
+uint8_t WIOE5_FactoryReset(UART_HandleTypeDef *huart){
+
+	uint8_t res = 0;
+	uint8_t string[100] = {0};
+	uint8_t querry[30] = "AT+FDEFAULT\r\n";
+
+	HAL_UART_Transmit(huart, querry, sizeof(querry), 100);
+	HAL_UART_Receive(huart, string, 100,1000);
+
+	if(strcmp("+FDEFAULT: OK\r\n",string)!=0x00){
+		res = 1;
+	}
+
+	return res;
+}
+
+
+/* Function use to send message through Lora
+ * INPUT:
+ *	  @huart is a pointer on uart handdle
+ *	  @string is the actual message to be send
+ *	  @string_size is an integer
+ *OUTPUT:
+ * 	  @res is an integer use to check error
+ * */
+uint8_t WIOE5_SendString(UART_HandleTypeDef *huart,uint8_t string[],uint32_t string_size){
+
+	uint8_t res = 0;
+	uint8_t received_str[100] = {0};
+	uint8_t querry[10] = "AT+MSG=";
+	/*Init a pointer on char as NULL*/
+	char * string_to_send = NULL;
+
+	/*Allocate some space for the string to send*/
+	string_to_send = (char *) malloc( (string_size+30) * sizeof(char));
+
+	/*Clear the string*/
+	for(int i=0;i<(string_size+30);i++){
+		string_to_send[i] = 0x0;
+	}
+
+	strcat(string_to_send,querry);
+	strncat(string_to_send,0x34,1);
+
+	/*Add the string to*/
+	for(int i=0;i<string_size;i++){
+		string_to_send[7+i] = string[i];
+	}
+
+	strncat(string_to_send,0x34,1);
+	strcat(string_to_send,"\r\n");
+
+	HAL_UART_Transmit(huart, string_to_send, (string_size+30), 100);
+	HAL_UART_Receive(huart, received_str, 100,1000);
+
+	free(string_to_send);
 	return res;
 }

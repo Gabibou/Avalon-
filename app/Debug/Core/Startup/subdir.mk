@@ -1,6 +1,6 @@
 ################################################################################
 # Automatically-generated file. Do not edit!
-# Toolchain: GNU Tools for STM32 (11.3.rel1)
+# Toolchain: GNU Tools for STM32 (10.3-2021.10)
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
@@ -16,7 +16,7 @@ S_DEPS += \
 
 # Each subdirectory must supply rules for building sources it contributes
 Core/Startup/%.o: ../Core/Startup/%.s Core/Startup/subdir.mk
-	arm-none-eabi-gcc -mcpu=cortex-m4 -g3 -DDEBUG -c -I"C:/Users/33768/STM32CubeIDE/workspace_1.11.0/AVALON_PRJ/Avalon-/app/Drivers/CMSIS/DSP" -I"C:/Users/33768/STM32CubeIDE/workspace_1.11.0/AVALON_PRJ/Avalon-/app/Drivers/CMSIS/DSP/Include" -I"C:/Users/33768/STM32CubeIDE/workspace_1.11.0/AVALON_PRJ/Avalon-/app/Drivers/CMSIS/Lib" -I"C:/Users/33768/STM32CubeIDE/workspace_1.11.0/AVALON_PRJ/Avalon-/app/Drivers/CMSIS/Lib/ARM" -x assembler-with-cpp -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m4 -g3 -DDEBUG -c -I"C:/Users/gabri/STM32CubeIDE/workspace_1.12.0/AVALON_PRJ/Avalon-/app/Drivers/CMSIS/DSP" -I"C:/Users/gabri/STM32CubeIDE/workspace_1.12.0/AVALON_PRJ/Avalon-/app/Drivers/CMSIS/DSP/Include" -I"C:/Users/gabri/STM32CubeIDE/workspace_1.12.0/AVALON_PRJ/Avalon-/app/Drivers/CMSIS/Lib" -I"C:/Users/gabri/STM32CubeIDE/workspace_1.12.0/AVALON_PRJ/Avalon-/app/Drivers/CMSIS/Lib/ARM" -x assembler-with-cpp -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@" "$<"
 
 clean: clean-Core-2f-Startup
 
