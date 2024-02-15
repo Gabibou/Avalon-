@@ -7,7 +7,7 @@
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2023 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -31,7 +31,9 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+extern uint8_t start_of_flash;
+extern uint8_t end_of_flash;
+uint8_t RX_BUFFER[100] = {0x00};
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -261,8 +263,16 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
+  start_of_flash = 1;
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+  strcat(RX_BUFFER,Buf);
+
+
+  /* check si on a la commande de fin de trame et sinon on ecrit dans la flash */
+#error "Create then bootloader end here (look for end of external flashing procedure + split incomming data into Alt + longi + lati)"
+#error "Also use the external flash driver to store it into external flash after"
+
   return (USBD_OK);
   /* USER CODE END 6 */
 }

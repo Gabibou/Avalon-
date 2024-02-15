@@ -48,6 +48,7 @@ MEMORY
   FLASH    (rx)    : ORIGIN = 0x08004000,   LENGTH = 480K	/*FLASH    (rx)    : ORIGIN = 0x08004000,   LENGTH = 480K in order to enable bootloader*/
 }
 
+
 /* Sections */
 SECTIONS
 {

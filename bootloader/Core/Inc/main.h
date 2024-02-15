@@ -57,11 +57,15 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SPI1_CS_Pin GPIO_PIN_8
+#define SPI1_CS_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_9
 #define LED_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 #define APP_ADDRESS 0x08004000
+#define TIME_TO_WAIT_S 10
+#define END_OF_FLASH_STR "FLASH_CMPLT\r\n"
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

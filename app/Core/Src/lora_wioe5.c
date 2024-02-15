@@ -242,6 +242,7 @@ uint8_t WIOE5_SendString(UART_HandleTypeDef *huart,uint8_t string[],uint32_t str
 	HAL_UART_Transmit(huart, string_to_send, (string_size+30), 100);
 	HAL_UART_Receive(huart, received_str, 100,1000);
 
+
 	free(string_to_send);
 	return res;
 }
