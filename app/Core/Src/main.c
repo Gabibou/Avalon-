@@ -88,8 +88,7 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-#error "Relocate this after bootloader complete !"
-	SCB->VTOR = 0x08004000;
+	SCB->VTOR = 0x0800A000;
 	__enable_irq();
   /* USER CODE END 1 */
 

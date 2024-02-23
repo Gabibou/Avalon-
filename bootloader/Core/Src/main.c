@@ -30,6 +30,7 @@
 /* USER CODE BEGIN PTD */
 uint8_t start_of_flash = 0;
 uint8_t end_of_flash = 0;
+uint8_t end_of_coordinate = 0;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -46,6 +47,7 @@ SPI_HandleTypeDef hspi1;
 
 /* USER CODE BEGIN PV */
 AT25X041B_t external_flash;
+coord_t coordinate;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -102,16 +104,29 @@ int main(void)
   uint8_t Flash_confirmation[] = "Flashing data please wait ...\r\n";
   uint8_t Print_time[] = "Waiting for USB interrupt !\r\n";
   uint8_t Flash_erase[] = "External flash erase please wait ... \r\n";
+  uint8_t Jumping_to_app[] = "Jumping to application !\r\n";
+  uint8_t Error1[] = "An error occurred while erasing external flash !\r\n";
 
   for(int i=0;i<TIME_TO_WAIT_S;i++){
 	  if(start_of_flash){
 		  CDC_Transmit_FS(Flash_erase, sizeof(Flash_erase));
-		  AT25X041B_ChipErase(&hspi1, &external_flash);
-		  CDC_Transmit_FS(Flash_confirmation, sizeof(Flash_confirmation));
+		  if( AT25X041B_ChipErase(&hspi1, &external_flash) == 0x01){
+			  CDC_Transmit_FS(Flash_confirmation, sizeof(Flash_confirmation));
+		  }
+		  else{
+			  CDC_Transmit_FS(Error1, sizeof(Error1));
+		  }
 
 		  /* Wait until we received a end of flash sequence */
 		  while(end_of_flash != 1){
 
+			  /* convert string to float and put it into coordinate */
+			  coordinate.altitude = 2;
+			  coordinate.latitude = 4.545;
+			  coordinate.longitude = 4.545;
+
+			  /* Flash the external flash */
+			  WriteCoordinateFlash(&hspi1, &external_flash,coordinate);
 		  }
 		  break;
 	  }
@@ -119,6 +134,8 @@ int main(void)
 	  HAL_Delay(1000);
   }
 
+
+  CDC_Transmit_FS(Jumping_to_app, sizeof(Jumping_to_app));
   JumpToApplication(APP_ADDRESS);
   /* USER CODE END 2 */
 
@@ -270,7 +287,7 @@ void JumpToApplication(uint32_t application_addr){
 	  SysTick->CTRL = 0;
 	  SysTick->LOAD = 0;
 	  SysTick->VAL = 0;
-#error "In order to jump correctly the app should be relocated at different @ - please allow more than (2048byte*4)=16384 byte -- probably around 40 or 42 kB "
+		//#error "In order to jump correctly the app should be relocated at different @ - please allow more than (2048byte*4)=16384 byte -- probably around 40 or 42 kB "
 	  /*Jump*/
 	  jump_to_app();
 }

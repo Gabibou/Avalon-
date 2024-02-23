@@ -63,9 +63,8 @@ void Error_Handler(void);
 #define LED_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-#define APP_ADDRESS 0x08004000
+#define APP_ADDRESS 0x0800A000
 #define TIME_TO_WAIT_S 10
-#define END_OF_FLASH_STR "FLASH_CMPLT\r\n"
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

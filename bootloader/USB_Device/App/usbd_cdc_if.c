@@ -33,6 +33,7 @@
 /* Private variables ---------------------------------------------------------*/
 extern uint8_t start_of_flash;
 extern uint8_t end_of_flash;
+extern uint8_t end_of_coordinate;
 uint8_t RX_BUFFER[100] = {0x00};
 /* USER CODE END PV */
 
@@ -264,14 +265,26 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
   start_of_flash = 1;
+  end_of_coordinate = 0;
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
   strcat(RX_BUFFER,Buf);
 
+  /* if we found the END OF FLASH COMMAND*/
+  if(RX_BUFFER == "FLASH_CMPLT\r\n"){
+	  end_of_flash = 1;
+	  /* clear the RX_BUFFER_ARRAY */
+	  memset(RX_BUFFER, 0, sizeof(RX_BUFFER));
+  }
+
+  /* If the received char is \n then it mean end of coordinate */
+  if(Buf[0] == 0x10){
+	  end_of_coordinate = 1;
+  }
 
   /* check si on a la commande de fin de trame et sinon on ecrit dans la flash */
-#error "Create then bootloader end here (look for end of external flashing procedure + split incomming data into Alt + longi + lati)"
-#error "Also use the external flash driver to store it into external flash after"
+//#error "Create then bootloader end here (look for end of external flashing procedure + split incomming data into Alt + longi + lati)"
+//#error "Also use the external flash driver to store it into external flash after"
 
   return (USBD_OK);
   /* USER CODE END 6 */
