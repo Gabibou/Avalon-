@@ -204,9 +204,9 @@ void StartLedTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	/*htim3.Instance->CCR1 = 1000;
+	htim3.Instance->CCR1 = 1000;
 	vTaskDelay(100);
-	htim3.Instance->CCR1 = 0;*/
+	htim3.Instance->CCR1 = 0;
 	HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
     vTaskDelay(5000);
   }

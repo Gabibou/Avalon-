@@ -142,8 +142,8 @@ int main(void)
 	  HAL_Delay(1000);
   }
 
-
   CDC_Transmit_FS(Jumping_to_app, sizeof(Jumping_to_app));
+  HAL_Delay(1000);
   JumpToApplication(APP_ADDRESS);
   /* USER CODE END 2 */
 
@@ -276,14 +276,17 @@ void JumpToApplication(uint32_t application_addr){
 	  uint32_t go_address = *((volatile uint32_t*) (application_addr + 4));
 	  void (*jump_to_app)(void) = (void *)go_address;
 
+	  /*disable all IRQ*/
+	  __disable_irq();
+
 	  /*Uninit all peripheral use by the bootloader*/
 	  HAL_GPIO_DeInit(LED_GPIO_Port, LED_Pin);
 
+	  /* Disable SPI*/
+	  HAL_SPI_DeInit(&hspi1);
+
 	  /*Disable clock*/
 	  HAL_RCC_DeInit();
-
-	  /*disable all IRQ*/
-	  __disable_irq();
 
 	  /*Relocate vector table*/
 	  SCB->VTOR = application_addr;
