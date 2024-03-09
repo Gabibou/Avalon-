@@ -88,7 +88,7 @@ void MX_FREERTOS_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	SCB->VTOR = 0x0800A000;
+	SCB->VTOR = 0x0800E000;
 	__enable_irq();
   /* USER CODE END 1 */
 

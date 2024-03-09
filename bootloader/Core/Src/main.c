@@ -19,11 +19,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_device.h"
-#include "at25x041b.h"
-
+#include <stdio.h>
+#include <string.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "at25x041b.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,11 +56,12 @@ static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 void JumpToApplication(uint32_t application_addr);
+uint8_t Rx_Buffer_Processing(uint8_t RX_BUFFER[],coord_t *output);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern uint8_t RX_BUFFER[100];
 /* USER CODE END 0 */
 
 /**
@@ -96,7 +97,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* Init the external flash */
-  AT25X041B_Init(&hspi1, &external_flash, SPI1_CS_GPIO_Port, SPI1_CS_Pin);
+  if(AT25X041B_Init(&hspi1, &external_flash, SPI1_CS_GPIO_Port, SPI1_CS_Pin) != 0x00){
+	  Error_Handler();
+  }
 
   HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
 
@@ -106,6 +109,7 @@ int main(void)
   uint8_t Flash_erase[] = "External flash erase please wait ... \r\n";
   uint8_t Jumping_to_app[] = "Jumping to application !\r\n";
   uint8_t Error1[] = "An error occurred while erasing external flash !\r\n";
+  uint8_t Write_confirmation[] = "Flash successful\r\n";
 
   for(int i=0;i<TIME_TO_WAIT_S;i++){
 	  if(start_of_flash){
@@ -120,13 +124,17 @@ int main(void)
 		  /* Wait until we received a end of flash sequence */
 		  while(end_of_flash != 1){
 
-			  /* convert string to float and put it into coordinate */
-			  coordinate.altitude = 2;
-			  coordinate.latitude = 4.545;
-			  coordinate.longitude = 4.545;
+			  /* Wait until a full coordinate has been send, it must end with \r\n */
+			  if(end_of_coordinate == 0x01){
+				  /* convert RX buffer into coordinate */
+				  Rx_Buffer_Processing(RX_BUFFER,&coordinate);
 
-			  /* Flash the external flash */
-			  WriteCoordinateFlash(&hspi1, &external_flash,coordinate);
+				  /* Flash the external flash */
+				  WriteCoordinateFlash(&hspi1, &external_flash,coordinate);
+				  end_of_coordinate = 0;
+				  memset(RX_BUFFER, 0, sizeof(RX_BUFFER));
+				  CDC_Transmit_FS(Write_confirmation, sizeof(Write_confirmation));
+			  }
 		  }
 		  break;
 	  }
@@ -217,7 +225,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
   hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
@@ -291,6 +299,52 @@ void JumpToApplication(uint32_t application_addr){
 	  /*Jump*/
 	  jump_to_app();
 }
+
+
+/*
+ * @brief Convert RX buffer into coordinate - Each coordinate should be send using the following method
+ * @method latitude,longitude,altitude\r\n
+ * @param RX_BUFFER any size buffer (should end with a \0)
+ * @param coord is the output coordinate pointer
+ * @output 0 if success 1 else
+ */
+uint8_t Rx_Buffer_Processing(uint8_t RX_BUFFER[],coord_t *output){
+
+	uint8_t temp_string[30] = {0x0};
+	uint8_t temp_char[2] = {0x0};
+	uint16_t counter = 0;
+
+	for(int i=0;i<3;i++){
+
+		while((RX_BUFFER[counter] != ',')&&(RX_BUFFER[counter] != '\r')){
+			temp_char[0] = RX_BUFFER[counter];
+			temp_char[1] = 0;
+			strcat(temp_string,temp_char);
+			counter++;
+		}
+
+		switch (i) {
+			case 0:
+				output->latitude = atof(temp_string);
+				break;
+			case 1:
+				output->longitude = atof(temp_string);
+				break;
+			case 2:
+				output->altitude = atof(temp_string);
+				break;
+		}
+		counter++;
+		memset(temp_string, 0, sizeof(temp_string));
+	}
+	return 0;
+}
+
+
+
+
+
+
 /* USER CODE END 4 */
 
 /**

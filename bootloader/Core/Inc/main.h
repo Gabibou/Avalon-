@@ -63,7 +63,7 @@ void Error_Handler(void);
 #define LED_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-#define APP_ADDRESS 0x0800A000
+#define APP_ADDRESS 0x0800E000
 #define TIME_TO_WAIT_S 10
 /* USER CODE END Private defines */
 
