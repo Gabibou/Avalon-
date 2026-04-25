@@ -2,3 +2,7 @@
 	path = lib/components_driver/BNO055_SensorAPI
 	url = https://github.com/boschsensortec/BNO055_SensorAPI.git
 	branch = master
+[submodule "lib/components_driver/BMP3_SensorAPI"]
+	path = lib/components_driver/BMP3_SensorAPI
+	url = https://github.com/boschsensortec/BMP3_SensorAPI.git
+	branch = master
