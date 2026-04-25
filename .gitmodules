@@ -1,0 +1,4 @@
+[submodule "lib/components_driver/BNO055_SensorAPI"]
+	path = lib/components_driver/BNO055_SensorAPI
+	url = https://github.com/boschsensortec/BNO055_SensorAPI.git
+	branch = master
