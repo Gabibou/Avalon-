@@ -14,11 +14,11 @@ typedef enum{
     COMPONENTS_INIT_SPI_COMMUNICATION_FAILED,
     COMPONENTS_INIT_I2C_COMMUNICATION_FAILED,
     COMPONENTS_INIT_IMU_SELF_TEST_FAILED,
-}components_init_status;
+}components_init_status_t;
 
 /**************/ 
 /* PROTOTYPES */
 /**************/ 
 
-components_init_status init_embedded_components(void);
-components_init_status boot_imu(void);
+components_init_status_t init_embedded_components(void);
+components_init_status_t boot_imu(void);

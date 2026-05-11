@@ -13,11 +13,11 @@
 /******************************/
 struct bno055_t bno055;
 
-components_init_status init_embedded_components(void){
+components_init_status_t init_embedded_components(void){
     /**
     * @brief Initialise all embedded hardware components available
     */
-    components_init_status init_status = COMPONENTS_INIT_OK;
+    components_init_status_t init_status = COMPONENTS_INIT_OK;
 
     // ---------- IMU ----------
     init_status = boot_imu();
@@ -25,12 +25,12 @@ components_init_status init_embedded_components(void){
     return init_status;
 }
 
-components_init_status boot_imu(void){
+components_init_status_t boot_imu(void){
     /**
      * @brief Initialise the inertial measurement unit 
      */
 
-    components_init_status imu_init_status = COMPONENTS_INIT_OK;
+    components_init_status_t imu_init_status = COMPONENTS_INIT_OK;
     u8 mcu_self_test_p = 0x0;
     u8 accel_self_test_p = 0x0;
     u8 gyro_self_test_p = 0x0;
