@@ -6,7 +6,8 @@ authors = ["Gabibou38"]
 
 # Optional compilation param
 [features]
-default = ["board_avalon_g474_rev_b", "dbg"]
+# default = ["board_avalon_g474_rev_b"]
+default = ["x86_x64_debug_target"]
 
 # Define every board compatible with the project
 board_avalon_g474_rev_a = [
@@ -31,13 +32,13 @@ sensor_bmp390 = [
 
 # Define if run in debug mode
 # If enabled sensors value will be emulated and all logs outputs
-dbg = []
+x86_x64_debug_target = []
 
 
 # Dependencies list
 [dependencies]
 bmp390 = {version = "0.4.3", optional = true}
-stm32g4 = {version = ">=0.16.0", features = ["stm32g474"], optional = true}
+stm32g4 = { version = ">=0.16.0", features = ["stm32g474"], optional = true }
 
 # Embedded target 
 [build]
