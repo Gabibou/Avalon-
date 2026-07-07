@@ -3,19 +3,25 @@ use super::user_interface_main;
 
 /*------------------------------------ Const ------------------------------------*/
 
-const UI_REVISION: UiRevisionStatusRegRevision = UiRevisionStatusRegRevision {major: 0x1, minor: 0x0, bugfix: 0x0};
-const FW_REVISION: UiRevisionStatusRegRevision = UiRevisionStatusRegRevision {major: 0x1, minor: 0x0, bugfix: 0x0};
+const UI_REVISION: UiRevisionStatusRegRevision = UiRevisionStatusRegRevision {major: user_interface_main::IntegerField {value: 0x00},
+                                                                              minor: user_interface_main::IntegerField {value: 0x00},
+                                                                              bugfix: user_interface_main::IntegerField {value: 0x00}};
+const FW_REVISION: UiRevisionStatusRegRevision = UiRevisionStatusRegRevision {major: user_interface_main::IntegerField {value: 0x00},
+                                                                              minor: user_interface_main::IntegerField {value: 0x00},
+                                                                              bugfix: user_interface_main::IntegerField {value: 0x00}};
 
 /*------------------------------------ Enum ------------------------------------*/
 
 /* Define every MCU available in this project */
-enum McuModelIdentifier {
+#[derive(Clone, Copy)]
+pub enum McuModelIdentifier {
     DEFAULT = 0x0000,
     STM32G474 = 0x7474,                                                      
 }
 
 /* Define every board available in this project */
-enum BoardModelIdentifier {
+#[derive(Clone, Copy)]
+pub enum BoardModelIdentifier {
     AVALON_STM32G4_V1 = 0x01,
     AVALON_STM32G4_V2 = 0x02,
 }
@@ -24,31 +30,31 @@ enum BoardModelIdentifier {
 
 /* Define every register available in the revision status section*/
 pub struct UiRevisionStatus {
-    section_access: user_interface_main::UserInterfaceAccessControl,        /*Define if the section can or can't be access from user point of view*/
-    mcu: UiRevisionStatusRegMcu,                                            /*Define on which mcu the firmware is running and it's unique identifier*/
-    board: UiRevisionStatusRegBoard,                                        /*Define on which board the firmware is running*/
-    ui_revision: UiRevisionStatusRegRevision,                               /*Define the user interface revision status*/
-    fw_revision: UiRevisionStatusRegRevision,                               /*Define the firmware revision status*/
+    pub section_access: user_interface_main::EnumField<user_interface_main::UserInterfaceAccessControl>,   /*Define if the section can or can't be access from user point of view*/
+    pub mcu: UiRevisionStatusRegMcu,                                                                       /*Define on which mcu the firmware is running and it's unique identifier*/
+    pub board: UiRevisionStatusRegBoard,                                                                   /*Define on which board the firmware is running*/
+    pub ui_revision: UiRevisionStatusRegRevision,                                                          /*Define the user interface revision status*/
+    pub fw_revision: UiRevisionStatusRegRevision,                                                          /*Define the firmware revision status*/
 }
 
 /*Define every identification used in the mcu*/
-struct UiRevisionStatusRegMcu {
-    unique_identifier: u32,                                                 /*Single ID generated based on chip wafer position X,Y + Lot ID*/
-    build_model_identifier: McuModelIdentifier,                             /*Model identification based on compilation target*/ 
+pub struct UiRevisionStatusRegMcu {
+    pub unique_identifier: user_interface_main::IntegerField<u32>,                                         /*Single ID generated based on chip wafer position X,Y + Lot ID*/
+    pub build_model_identifier: user_interface_main::EnumField<McuModelIdentifier>,                        /*Model identification based on compilation target*/ 
 }
 
 /*Define every identification used in the board*/
-struct UiRevisionStatusRegBoard {
-    unique_identifier: u32,                                                 /*Unique identifier read from embedded FLASH or EEPROM*/
-    build_model_identifier: BoardModelIdentifier,                                            /*Selected build board model identification*/        
-    revision: u8,                                                /*Board revision read from embedded FLASH or EEPROM*/
+pub struct UiRevisionStatusRegBoard {
+    pub unique_identifier: user_interface_main::IntegerField<u32>,                                         /*Unique identifier read from embedded FLASH or EEPROM*/
+    pub build_model_identifier: user_interface_main::EnumField<BoardModelIdentifier>,                      /*Selected build board model identification*/        
+    pub revision: user_interface_main::IntegerField<u8>,                                                   /*Board revision read from embedded FLASH or EEPROM*/
 }
 
 /*Define how version are considered in the UI*/
-struct UiRevisionStatusRegRevision {
-    major: u8,                                                              /*Major version update*/
-    minor: u8,                                                              /*Minor version update*/
-    bugfix: u8,                                                             /*Bufgix version update*/    
+pub struct UiRevisionStatusRegRevision {
+    pub major: user_interface_main::IntegerField<u8>,                                                      /*Major version update*/
+    pub minor: user_interface_main::IntegerField<u8>,                                                      /*Minor version update*/
+    pub bugfix: user_interface_main::IntegerField<u8>,                                                     /*Bufgix version update*/    
 }
 
 /*------------------------------------ Impl default ------------------------------------*/
@@ -56,11 +62,18 @@ struct UiRevisionStatusRegRevision {
 /* Add default value for this section of the User interface */
 impl Default for UiRevisionStatus {
         fn default () -> UiRevisionStatus{
-            UiRevisionStatus{section_access: user_interface_main::UserInterfaceAccessControl::NoReadNoWrite, 
-                             mcu: UiRevisionStatusRegMcu {unique_identifier: 0x00000000, build_model_identifier: McuModelIdentifier::DEFAULT},
-                             board: UiRevisionStatusRegBoard {unique_identifier: 0x00000000, build_model_identifier: BoardModelIdentifier::AVALON_STM32G4_V2 , revision:0x00},
-                             ui_revision: UiRevisionStatusRegRevision {major: 0x00, minor: 0x00, bugfix: 0x00},
-                             fw_revision: UiRevisionStatusRegRevision {major: 0x00, minor: 0x00, bugfix: 0x00},
+            UiRevisionStatus{section_access: user_interface_main::EnumField {value: user_interface_main::UserInterfaceAccessControl::NoReadNoWrite}, 
+                             mcu: UiRevisionStatusRegMcu {unique_identifier: user_interface_main::IntegerField {value: 0x00000000},
+                                                          build_model_identifier: user_interface_main::EnumField {value: McuModelIdentifier::DEFAULT}},
+                             board: UiRevisionStatusRegBoard {unique_identifier: user_interface_main::IntegerField {value: 0x00000000},
+                                                              build_model_identifier: user_interface_main::EnumField {value: BoardModelIdentifier::AVALON_STM32G4_V2},
+                                                              revision: user_interface_main::IntegerField {value: 0x00}},
+                             ui_revision: UiRevisionStatusRegRevision {major: user_interface_main::IntegerField {value: 0x00},
+                                                                       minor: user_interface_main::IntegerField {value: 0x00},
+                                                                       bugfix: user_interface_main::IntegerField {value: 0x00}},
+                             fw_revision: UiRevisionStatusRegRevision {major: user_interface_main::IntegerField {value: 0x00},
+                                                                       minor: user_interface_main::IntegerField {value: 0x00},
+                                                                       bugfix: user_interface_main::IntegerField {value: 0x00}},
             }
         }
 }
@@ -77,7 +90,7 @@ pub fn ui_revision_status_init() -> UiRevisionStatus{
     let mut ui_revision_status_struct = UiRevisionStatus::default();
 
     // Configure this section in READ_ONLY
-    ui_revision_status_struct.section_access = user_interface_main::UserInterfaceAccessControl::ReadOnly;
+    ui_revision_status_struct.section_access = user_interface_main::EnumField {value: user_interface_main::UserInterfaceAccessControl::ReadOnly};
     // Configure firmware and ui revision configured at the top of this file
     ui_revision_status_struct.ui_revision = UI_REVISION;
     ui_revision_status_struct.fw_revision = FW_REVISION;
@@ -102,7 +115,9 @@ fn get_mcu_identifier() -> UiRevisionStatusRegMcu{
     // Read the DBGMCU_IDCODE register
     let value = unsafe { dbgmcu_idcode_pointer.read_volatile() };
     // Apply to the struct the value
-    let mcu_identifier_struct = UiRevisionStatusRegMcu{build_model_identifier: McuModelIdentifier::STM32G474, unique_identifier: 0x11};
+    // TODO: Add correct uuid computation below --> set to 0x11 for now
+    let mcu_identifier_struct = UiRevisionStatusRegMcu{build_model_identifier: user_interface_main::EnumField {value: McuModelIdentifier::STM32G474},
+                                                       unique_identifier: user_interface_main::IntegerField {value: 0x11}};
     return mcu_identifier_struct;
 }
 
@@ -116,11 +131,9 @@ fn get_board_identifier() -> UiRevisionStatusRegBoard{
 
     //TODO: Add board EEPROM readings 
 
-
-
-    let board_identifier_struct = UiRevisionStatusRegBoard{build_model_identifier: BoardModelIdentifier::AVALON_STM32G4_V2,
-                                                           unique_identifier: 0x11,
-                                                           revision: 0x0};
+    let board_identifier_struct = UiRevisionStatusRegBoard{build_model_identifier: user_interface_main::EnumField {value: BoardModelIdentifier::AVALON_STM32G4_V2},
+                                                           unique_identifier: user_interface_main::IntegerField {value: 0x11},
+                                                           revision: user_interface_main::IntegerField {value: 0x00}};
     return board_identifier_struct;
 }
 
@@ -131,7 +144,8 @@ fn get_mcu_identifier() -> UiRevisionStatusRegMcu{
     @input: None
     @output: (UiRevisionStatusRegMcu) - mcu revision and unique identifier
     */
-    let mcu_identifier_struct = UiRevisionStatusRegMcu{build_model_identifier: McuModelIdentifier::DEFAULT, unique_identifier: 0xCAFECAFE};
+    let mcu_identifier_struct = UiRevisionStatusRegMcu{build_model_identifier: user_interface_main::EnumField {value: McuModelIdentifier::DEFAULT},
+                                                       unique_identifier: user_interface_main::IntegerField {value: 0xCAFECAFE}};
     return mcu_identifier_struct;
 }
 
@@ -143,8 +157,8 @@ fn get_board_identifier() -> UiRevisionStatusRegBoard{
     @output: (UiRevisionStatusRegMcu) - board revision and identifier
     */
 
-    let board_identifier_struct = UiRevisionStatusRegBoard{build_model_identifier: BoardModelIdentifier::AVALON_STM32G4_V1,
-                                                           unique_identifier: 0xCAFECAFE,
-                                                           revision: 0x00};
+    let board_identifier_struct = UiRevisionStatusRegBoard{build_model_identifier: user_interface_main::EnumField {value: BoardModelIdentifier::AVALON_STM32G4_V1},
+                                                           unique_identifier: user_interface_main::IntegerField {value: 0xCAFECAFE},
+                                                           revision: user_interface_main::IntegerField {value: 0x00}};
     return board_identifier_struct;
 }
