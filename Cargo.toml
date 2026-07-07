@@ -12,12 +12,12 @@ default = ["x86_x64_debug_target"]
 # Define every board compatible with the project
 board_avalon_g474_rev_a = [
     "mcu_stm32g474",
-    "sensor_bmp390",
 ]
 
 board_avalon_g474_rev_b = [
     "mcu_stm32g474",
     "sensor_bmp390",
+    "sensor_bno055",
 ]
 
 # Define every mcu compatible with the project
@@ -30,6 +30,10 @@ sensor_bmp390 = [
     "dep:bmp390"
 ]
 
+sensor_bno055 = [
+    "dep:bno055"
+]
+
 # Define if run in debug mode
 # If enabled sensors value will be emulated and all logs outputs
 x86_x64_debug_target = []
@@ -38,6 +42,7 @@ x86_x64_debug_target = []
 # Dependencies list
 [dependencies]
 bmp390 = {version = "0.4.3", optional = true}
+bno055 = {version = "0.4.0", optional = true}
 stm32g4 = { version = ">=0.16.0", features = ["stm32g474"], optional = true }
 
 # Embedded target 

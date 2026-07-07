@@ -1,8 +1,22 @@
 
 use super::user_interface_revision_status;
 use super::user_interface_system_status;
+use super::user_interface_alerts_status;
+use super::user_interface_memory;
+use super::user_interface_pid_control;
+use super::user_interface_command;
+use super::user_interface_sensors_control;
+use super::user_interface_actuators_control;
+use super::user_interface_flight_control;
 use super::user_interface_revision_status::UiRevisionStatus;
 use super::user_interface_system_status::UiSystemStatus;
+use super::user_interface_alerts_status::UiAlertsStatus;
+use super::user_interface_memory::UiMemory;
+use super::user_interface_pid_control::UiPidControl;
+use super::user_interface_command::UiCommand;
+use super::user_interface_sensors_control::UiSensorsControl;
+use super::user_interface_actuators_control::UiActuatorsControl;
+use super::user_interface_flight_control::UiFlightControl;
 
 /*------------------------------------ Enum ------------------------------------*/
 
@@ -27,9 +41,15 @@ pub trait Field {
 /*------------------------------------ Struct ------------------------------------*/
 
 pub struct UserInterface {
-
     pub revision_status: UiRevisionStatus,
     pub system_status: UiSystemStatus,
+    pub alerts_status: UiAlertsStatus,
+    pub external_memory: UiMemory,
+    pub pid_control: UiPidControl,
+    pub command: UiCommand,
+    pub sensor_control: UiSensorsControl,
+    pub actuator_control: UiActuatorsControl,
+    pub flight_control: UiFlightControl,
 }
 
 pub struct BoolField {
@@ -99,31 +119,24 @@ pub fn ui_init() -> UserInterface{
     println!("UI_Init: Starting initialisation");
     let revision_status = user_interface_revision_status::ui_revision_status_init();
     let system_status = user_interface_system_status::ui_system_status_init();
+    let alerts_status = user_interface_alerts_status::ui_alerts_status_init();
+    let external_memory = user_interface_memory::ui_memory_init();
+    let pid_control = user_interface_pid_control::ui_pid_control_init();
+    let command = user_interface_command::ui_command_init();
+    let sensors_control = user_interface_sensors_control::ui_sensors_control_init();
+    let actuator_control = user_interface_actuators_control::ui_actuators_control_init();
+    let flight_control = user_interface_flight_control::ui_flight_control_init();
 
     /* Output the user interface*/
     let user_interface = UserInterface {revision_status: revision_status,
                                         system_status: system_status, 
+                                        alerts_status: alerts_status,
+                                        external_memory: external_memory,
+                                        pid_control: pid_control,
+                                        command: command,
+                                        sensors_control: sensors_control,
+                                        actuator_control: actuator_control,
+                                        flight_control: flight_control,
                                         };
     return user_interface;
 }
-
-// pub fn ui_write_field<F: Field>(field: &mut F, value: F::Value){
-//     /*
-//     @brief: Write a single field in the User interface
-//     @input: (Field) - Any Field of the User interface to write
-//     @input: (Field::Value) - The value to write. It should be the same type as the Field type
-//     @output: None, modify the User interface
-//     */
-//     println!("UI_Init: Starting initialisation");
-//     //field.set(value);
-// }
-
-// pub fn ui_read_field<F: Field>(&field: F) -> F::Value{
-//     /*
-//     @brief: Read a single field from the user interface
-//     @input: (Field) - The field to read 
-//     @output: (F::Value) - The data read from the user interface. The type of this depend on the type in Field
-//     */
-//     println!("UI_Init: Starting initialisation");
-//     //return field.get();
-// }
