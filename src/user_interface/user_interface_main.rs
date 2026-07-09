@@ -123,7 +123,7 @@ pub fn ui_init() -> UserInterface{
     let external_memory = user_interface_memory::ui_memory_init();
     let pid_control = user_interface_pid_control::ui_pid_control_init();
     let command = user_interface_command::ui_command_init();
-    let sensors_control = user_interface_sensors_control::ui_sensors_control_init();
+    let sensor_control = user_interface_sensors_control::ui_sensors_control_init();
     let actuator_control = user_interface_actuators_control::ui_actuators_control_init();
     let flight_control = user_interface_flight_control::ui_flight_control_init();
 
@@ -134,7 +134,7 @@ pub fn ui_init() -> UserInterface{
                                         external_memory: external_memory,
                                         pid_control: pid_control,
                                         command: command,
-                                        sensors_control: sensors_control,
+                                        sensor_control: sensor_control,
                                         actuator_control: actuator_control,
                                         flight_control: flight_control,
                                         };

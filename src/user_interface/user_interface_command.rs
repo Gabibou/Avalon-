@@ -4,7 +4,7 @@ use super::user_interface_main;
 
 #[derive(Clone, Copy)]
 pub enum CommandAvailable {
-    UNKNOWN_CMD = 0x00,
+    UNKNOWN_CMD = 0x00,                                                                                     /*Default CMD - used when no command detected*/      
 }
 
 /*------------------------------------ Struct ------------------------------------*/

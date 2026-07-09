@@ -5,8 +5,6 @@ use super::user_interface_main;
 /* Define every register available in the actuator control section*/
 pub struct UiActuatorsControl {
     pub section_access: user_interface_main::EnumField<user_interface_main::UserInterfaceAccessControl>,    /*Define if the section can or can't be access from user point of view*/
-    pub command: user_interface_main::EnumField<CommandAvailable>,                                          /*Define which command is currently processed by the firmware*/
-    pub command_assertion: user_interface_main::BoolField,                                                  /*Define whenever the command set has been process by the firmware, must be cleared by user*/ 
 }
 
 /*------------------------------------ Impl default ------------------------------------*/
@@ -14,9 +12,8 @@ pub struct UiActuatorsControl {
 /* Add default value for this section of the User interface */
 impl Default for UiActuatorsControl {
         fn default () -> UiActuatorsControl{
-            UiActuatorsControl {section_access: user_interface_main::EnumField {value: user_interface_main::UserInterfaceAccessControl::NoReadNoWrite},
-                       command: user_interface_main::EnumField {value: CommandAvailable::UNKNOWN_CMD},
-                       command_assertion: user_interface_main::BoolField {value: false},
+            UiActuatorsControl {
+                section_access: user_interface_main::EnumField {value: user_interface_main::UserInterfaceAccessControl::NoReadNoWrite},
             }
         }
 }
