@@ -6,8 +6,8 @@ authors = ["Gabibou38"]
 
 # Optional compilation param
 [features]
-# default = ["board_avalon_g474_rev_b"]
-default = ["x86_x64_debug_target"]
+default = ["board_avalon_g474_rev_b"]
+# default = ["x86_x64_debug_target"]
 
 # Define every board compatible with the project
 board_avalon_g474_rev_a = [
